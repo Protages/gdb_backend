@@ -1,0 +1,12 @@
+*.log
+local_settings.py
+sql_app.db
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.vscode/
+.idea/
+.migrations/
+# .env.prod
+# .env.prod.db
