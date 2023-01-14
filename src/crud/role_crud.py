@@ -1,3 +1,5 @@
+from fastapi import Response, status
+
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
@@ -27,3 +29,10 @@ def update_role(db: Session, role_id: int, role: RoleUpdate) -> models.Role:
     db.commit()
     db_role = get_role_by_id(db=db, role_id=role_id)
     return db_role
+
+
+def delete_role(db: Session, role_id: int):
+    db_role = get_role_by_id(db=db, role_id=role_id)
+    db.delete(db_role)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

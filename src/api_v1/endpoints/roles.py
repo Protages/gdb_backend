@@ -14,7 +14,7 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['roles'])
+router = APIRouter(tags=['Roles'])
 
 
 @router.get('/role/{role_id}', response_model=Role)
@@ -33,3 +33,9 @@ async def create_role(role: RoleCreate, db: Session = Depends(get_db)):
 async def update_role(role_id: int, role: RoleUpdate, db: Session = Depends(get_db)):
     role = role_crud.update_role(db=db, role_id=role_id, role=role)
     return role
+
+
+@router.delete('/role/{role_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_role(role_id: int, db: Session = Depends(get_db)):
+    response = role_crud.delete_role(db=db, role_id=role_id)
+    return response

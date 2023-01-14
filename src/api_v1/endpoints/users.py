@@ -15,34 +15,40 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['users'])
+router = APIRouter(tags=['Users'])
 
 
-@router.get('/users/me', response_model=User)
+@router.get('/user/me', response_model=User)
 async def read_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = authenticate_user_by_token(db=db, token=token)
-    if not user:
+    db_user = authenticate_user_by_token(db=db, token=token)
+    if not db_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return user
+    return db_user
 
 
-@router.get('/users/{user_id}', response_model=User)
+@router.get('/user/{user_id}', response_model=User)
 async def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
-    user = user_crud.get_user_by_id(db, user_id)
-    return user
+    db_user = user_crud.get_user_by_id(db, user_id)
+    return db_user
 
 
-@router.post('/users', response_model=User)
+@router.post('/user', response_model=User)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    user = user_crud.create_user(db, user)
-    return user
+    db_user = user_crud.create_user(db, user)
+    return db_user
 
 
-@router.put('/users/{user_id}', response_model=User)
+@router.put('/user/{user_id}', response_model=User)
 async def update_user(user_id, update_user: UserUpdate, db: Session = Depends(get_db)):
-    user = user_crud.update_user(db=db, user_id=user_id, update_user=update_user)
-    return user
+    db_user = user_crud.update_user(db=db, user_id=user_id, update_user=update_user)
+    return db_user
+
+
+@router.delete('/user/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    response = user_crud.delete_user(db=db, user_id=user_id)
+    return response

@@ -13,7 +13,7 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['users', 'auth'])
+router = APIRouter(tags=['Users', 'Auth'])
 
 
 @router.post('/token', response_model=Token)
