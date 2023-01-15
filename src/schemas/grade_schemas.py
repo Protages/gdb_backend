@@ -1,14 +1,14 @@
 from pydantic import BaseModel, Field
 
+from src.schemas.user_schemas import UserNested
+from src.schemas.game_schemas import GameNested
+
 
 class GradeBase(BaseModel):
-    score: int | None = None
-    user: int | None = None
-    game: int | None = None
+    score: int
 
 
 class GradeCreate(GradeBase):
-    score: int
     user: int = Field(description='User id')
     game: int = Field(description='Game id')
 
@@ -19,6 +19,8 @@ class GradeUpdate(GradeBase):
 
 class Grade(GradeBase):
     id: int
+    user: UserNested
+    game: GameNested
 
     class Config:
         orm_mode = True

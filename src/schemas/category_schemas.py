@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 
-from src.schemas.game_schemas import Game
+from src.schemas.game_schemas import GameNested
+from src.schemas.user_schemas import UserNested
 
 
 class CategoryBase(BaseModel):
@@ -20,7 +21,8 @@ class CategoryUpdate(CategoryBase):
 
 class Category(CategoryBase):
     id: int
-    games: list[Game] | None = None
+    user: UserNested
+    games: list[GameNested] | None = None
 
     class Config:
         orm_mode = True

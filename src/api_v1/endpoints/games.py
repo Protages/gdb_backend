@@ -21,11 +21,6 @@ router = APIRouter(tags=['Games'])
 @router.get('/game/{game_id}', response_model=Game)
 async def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
     db_game = game_crud.get_game_by_id(db=db, game_id=game_id)
-    if not db_game:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Object does not exist"
-        )
     return db_game
 
 

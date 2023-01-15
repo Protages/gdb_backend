@@ -21,11 +21,6 @@ router = APIRouter(tags=['Genres'])
 @router.get('/genre/{genre_id}', response_model=Genre)
 async def read_genre_by_id(genre_id: int, db: Session = Depends(get_db)):
     genre = genre_crud.get_genre_by_id(db=db, genre_id=genre_id)
-    if not genre:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Object does not exist"
-        )
     return genre
 
 

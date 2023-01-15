@@ -5,11 +5,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
 from src.schemas.review_schemas import ReviewCreate, ReviewUpdate
+from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 
 
 def get_review_by_id(db: Session, review_id: int) -> models.Review:
     db_review = db.query(models.Review).filter(models.Review.id == review_id).first()
+    if not db_review:
+        raise ObjectDoesNotExistException(obj_name='review')
     return db_review
 
 

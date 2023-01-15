@@ -1,18 +1,21 @@
 import datetime
 
-from fastapi import Response, status
+from fastapi import Response, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
 from src.schemas.game_schemas import GameCreate, GameUpdate
+from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 from src.crud import genre_crud, platform_crud
 
 
 def get_game_by_id(db: Session, game_id: int) -> models.Game:
     db_game = db.query(models.Game).filter(models.Game.id == game_id).first()
+    if not db_game:
+        raise ObjectDoesNotExistException(obj_name='game')
     return db_game
 
 

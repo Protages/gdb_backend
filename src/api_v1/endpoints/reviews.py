@@ -21,11 +21,6 @@ router = APIRouter(tags=['Reviews'])
 @router.get('/review/{review_id}', response_model=Review)
 async def read_review_by_id(review_id: int, db: Session = Depends(get_db)):
     db_review = review_crud.get_review_by_id(db=db, review_id=review_id)
-    if not db_review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Object does not exist"
-        )
     return db_review
 
 

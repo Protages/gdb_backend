@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Table, ForeignKey, Integer, String, Boolean, Date
+from sqlalchemy import (
+    Column, 
+    Table, 
+    ForeignKey, 
+    Integer, 
+    String, 
+    Boolean, 
+    Date, 
+    UniqueConstraint
+)
 from sqlalchemy.orm import relationship
 
 from src.db.database import Base
@@ -91,6 +100,9 @@ class Game(Base):
         'Category', secondary=game_category, back_populates='games'
     )
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Review(Base):
     id = Column(Integer, primary_key=True, index=True)
@@ -104,17 +116,26 @@ class Review(Base):
     rating_minus = Column(Integer)
     comments = relationship('Comment', back_populates='review')
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Genre(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True, index=True)
     games = relationship('Game', secondary=game_genre, back_populates='genres')
 
+    def __str__(self) -> str:
+        return self.title
+
 
 class Platform(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True, index=True)
     games = relationship('Game', secondary=game_platform, back_populates='platforms')
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class Comment(Base):
@@ -126,9 +147,15 @@ class Comment(Base):
     game = relationship('Game', back_populates='comments')
     review_id = Column(Integer, ForeignKey('review.id'))
     review = relationship('Review', back_populates='comments')
+    
+    def __str__(self) -> str:
+        return self.id
 
 
 class Grade(Base):
+    __table_args__ = (
+        UniqueConstraint('user_id', 'game_id', name='unique_user_game'),
+    )
     id = Column(Integer, primary_key=True, index=True)
     score = Column(Integer)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -136,10 +163,19 @@ class Grade(Base):
     user = relationship('User', back_populates='grades')
     game = relationship('Game', back_populates='grades')
 
+    def __str__(self) -> str:
+        return self.id
+
 
 class Category(Base):
+    __table_args__ = (
+        UniqueConstraint('title', 'user_id', name='unique_user_game'),
+    )
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship('User', back_populates='categories')
     games = relationship('Game', secondary=game_category, back_populates='categories')
+
+    def __str__(self) -> str:
+        return self.title

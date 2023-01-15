@@ -1,14 +1,18 @@
 from fastapi import Response, status
+from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
 from src.schemas.genre_schemas import GenreCreate, GenreUpdate
+from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 
 
 def get_genre_by_id(db: Session, genre_id: int) -> models.Genre:
     db_genre = db.query(models.Genre).filter(models.Genre.id == genre_id).first()
+    if not db_genre:
+        raise ObjectDoesNotExistException(obj_name='genre')
     return db_genre
 
 
@@ -21,13 +25,17 @@ def create_genre(db: Session, genre: GenreCreate) -> models.Genre:
 
 
 def update_genre(db: Session, genre_id: int, genre: GenreUpdate) -> models.Genre:
-    res = db.execute(
-        Update(models.Genre)
-        .where(models.Genre.id == genre_id)
-        .values(**genre.dict(exclude_unset=True))
-    )
-    db.commit()
     db_genre = get_genre_by_id(db=db, genre_id=genre_id)
+    update_data = jsonable_encoder(genre, exclude_unset=True)
+
+    for field in jsonable_encoder(db_genre):
+        if field in update_data:
+            setattr(db_genre, field, update_data[field])
+
+    db.add(db_genre)
+    db.commit()
+    db.refresh(db_genre)
+
     return db_genre
 
 

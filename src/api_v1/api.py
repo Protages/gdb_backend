@@ -7,7 +7,10 @@ from src.api_v1.endpoints import (
     genres, 
     platforms, 
     games,
-    reviews
+    reviews,
+    comments,
+    grades,
+    categories
 )
 
 prefix = '/api/v1'
@@ -20,3 +23,6 @@ api_v1_router.include_router(genres.router, prefix=prefix)
 api_v1_router.include_router(platforms.router, prefix=prefix)
 api_v1_router.include_router(games.router, prefix=prefix)
 api_v1_router.include_router(reviews.router, prefix=prefix)
+api_v1_router.include_router(comments.router, prefix=prefix)
+api_v1_router.include_router(grades.router, prefix=prefix)
+api_v1_router.include_router(categories.router, prefix=prefix)

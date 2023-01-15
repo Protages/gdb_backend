@@ -2,6 +2,7 @@ import datetime
 
 from pydantic import BaseModel, Field, validator
 
+from src.schemas.nested_models import GameNested
 from src.schemas.genre_schemas import Genre
 from src.schemas.platform_schemas import Platform
 from src.schemas.comment_schemas import Comment
@@ -45,20 +46,20 @@ class Game(GameBase):
         orm_mode = True
 
 
-class GameNested(GameBase):
-    id: int
-    genres: list | None = []
-    platforms: list | None = []
+# class GameNested(GameBase):
+#     id: int
+#     genres: list | None = []
+#     platforms: list | None = []
 
-    @validator('genres')
-    def genres_validator(cls, v) -> list[int]:
-        res = [genre.id for genre in v]
-        return res
+#     @validator('genres')
+#     def genres_validator(cls, v) -> list[int]:
+#         res = [genre.id for genre in v]
+#         return res
     
-    @validator('platforms')
-    def platform_validator(cls, v) -> list[int]:
-        res = [platform.id for platform in v]
-        return res
+#     @validator('platforms')
+#     def platform_validator(cls, v) -> list[int]:
+#         res = [platform.id for platform in v]
+#         return res
 
-    class Config:
-        orm_mode = True
+#     class Config:
+#         orm_mode = True

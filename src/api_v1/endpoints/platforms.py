@@ -21,11 +21,6 @@ router = APIRouter(tags=['Platforms'])
 @router.get('/platform/{platform_id}', response_model=Platform)
 async def read_platform_by_id(platform_id: int, db: Session = Depends(get_db)):
     db_platform = platform_crud.get_platform_by_id(db=db, platform_id=platform_id)
-    if not db_platform:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Object does not exist"
-        )
     return db_platform
 
 

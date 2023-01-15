@@ -8,20 +8,27 @@ from src.models import models
 from src.schemas.user_schemas import UserCreate, UserUpdate
 from src.core.security import create_hashing_password
 from src.crud import role_crud
-from src.api_v1.validators import uniqe_validator
+from src.api_v1.validators import unique_validator
+from src.api_v1.exceptions import ObjectDoesNotExistException
 
 
 def get_user_by_id(db: Session, user_id: int) -> models.User:
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not db_user:
+        raise ObjectDoesNotExistException(obj_name='user')
+    return db_user
 
 
 def get_user_by_username(db: Session, username: str) -> models.User:
-    return db.query(models.User).filter(models.User.username == username).first()
+    db_user = db.query(models.User).filter(models.User.username == username).first()
+    if not db_user:
+        raise ObjectDoesNotExistException(obj_name='user')
+    return db_user
 
 
 def create_user(db: Session, user: UserCreate) -> models.User:
-    uniqe_validator(model=models.User, obj=user, field_name='username', db=db)
-    uniqe_validator(model=models.User, obj=user, field_name='email', db=db)
+    unique_validator(model=models.User, obj=user, field_name='username', db=db)
+    unique_validator(model=models.User, obj=user, field_name='email', db=db)
 
     hashed_password = create_hashing_password(user.password)
     roles_id = user.roles
@@ -39,8 +46,8 @@ def create_user(db: Session, user: UserCreate) -> models.User:
 
 
 def update_user(db: Session, user_id: int, update_user: UserUpdate) -> models.User:
-    uniqe_validator(model=models.User, obj=update_user, field_name='username', db=db)
-    uniqe_validator(model=models.User, obj=update_user, field_name='email', db=db)
+    unique_validator(model=models.User, obj=update_user, field_name='username', db=db)
+    unique_validator(model=models.User, obj=update_user, field_name='email', db=db)
 
     db_user = get_user_by_id(db=db, user_id=user_id)
     roles_id = update_user.roles

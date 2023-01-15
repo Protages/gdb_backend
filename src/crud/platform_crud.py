@@ -1,15 +1,19 @@
 from fastapi import Response, status
+from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
 from src.schemas.platform_schemas import PlatformCreate, PlatformUpdate
+from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 
 
 def get_platform_by_id(db: Session, platform_id: int) -> models.Platform:
     db_platform = db.query(models.Platform).\
         filter(models.Platform.id == platform_id).first()
+    if not db_platform:
+        raise ObjectDoesNotExistException(obj_name='platform')
     return db_platform
 
 
@@ -24,13 +28,17 @@ def create_platform(db: Session, platform: PlatformCreate) -> models.Platform:
 def update_platform(
         db: Session, platform_id: int, platform: PlatformUpdate
     ) -> models.Platform:
-    res = db.execute(
-        Update(models.Platform)
-        .where(models.Platform.id == platform_id)
-        .values(**platform.dict(exclude_unset=True))
-    )
-    db.commit()
     db_platform = get_platform_by_id(db=db, platform_id=platform_id)
+    update_data = jsonable_encoder(platform, exclude_unset=True)
+
+    for field in jsonable_encoder(db_platform):
+        if field in update_data:
+            setattr(db_platform, field, update_data[field])
+
+    db.add(db_platform)
+    db.commit()
+    db.refresh(db_platform)
+
     return db_platform
 
 
