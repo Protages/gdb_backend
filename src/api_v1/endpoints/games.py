@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from src.models import models
@@ -39,4 +40,24 @@ async def update_game(game_id: int, game: GameUpdate, db: Session = Depends(get_
 @router.delete('/game/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_game(game_id: int, db: Session = Depends(get_db)):
     response = game_crud.delete_game(db=db, game_id=game_id)
+    return response
+
+
+@router.get(
+    '/game/{game_id}/img', 
+    response_class=FileResponse, 
+    responses={
+        200: {
+            "content": {"image/png": {}},
+            "description": "Return the game image",
+        }
+    })
+async def get_game_image(game_id: int, db: Session = Depends(get_db)):
+    img_path = game_crud.get_game_image_path(db=db, game_id=game_id)
+    return FileResponse(img_path, media_type="image/png")
+
+
+@router.post('/game/{game_id}/img', status_code=status.HTTP_200_OK)
+async def upload_game_image(game_id: int, image: UploadFile, db: Session = Depends(get_db)):
+    response = game_crud.upload_game_image(db=db, game_id=game_id, image=image)
     return response

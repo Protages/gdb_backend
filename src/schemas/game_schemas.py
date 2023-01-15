@@ -11,7 +11,6 @@ from src.schemas.grade_schemas import Grade
 
 class GameBase(BaseModel):
     title: str | None = None
-    img: str | None = None
     description: str | None = None
     release: datetime.date | None = None
     developer: str | None = None
@@ -36,6 +35,7 @@ class GameUpdate(GameBase):
 
 class Game(GameBase):
     id: int
+    image_path: str
     reviews: list | None = []
     genres: list | None = []
     platforms: list | None = []

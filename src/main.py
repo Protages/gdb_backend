@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from src.api_v1.api import api_v1_router
 from src.db.database import Base, SessionLocal, engine
@@ -10,11 +11,12 @@ from src.api_v1.exceptions import ObjectDoesNotExistException
 init_db(db=SessionLocal())
 
 app = FastAPI(
-    # openapi_url='/api/v1/openapi.json', 
-    # docs_url='/api/v1/docs', 
-    redoc_url=None,
+    # openapi_url='/api/v1/openapi.json',
+    # docs_url='/api/v1/docs',
+    # redoc_url='/api/v1/redocs',
     title='GDB App'
 )
+app.mount('/src/static', StaticFiles(directory='src/static'), name='static')
 app.include_router(api_v1_router)
 
 

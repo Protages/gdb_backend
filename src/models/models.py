@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sqlalchemy import (
     Column, 
     Table, 
@@ -80,9 +82,11 @@ game_category = Table(
 
 
 class Game(Base):
+    default_image_url = 'src/static/img/games/default.png'
+
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    img = Column(String)
+    image_path = Column(String, default=default_image_url)
     genres = relationship('Genre', secondary=game_genre, back_populates='games')
     platforms = relationship(
         'Platform', secondary=game_platform, back_populates='games'
@@ -99,6 +103,18 @@ class Game(Base):
     categories = relationship(
         'Category', secondary=game_category, back_populates='games'
     )
+
+    def create_image_path(self) -> str:
+        prefix = 'src/static/img/games'
+        path = f'{prefix}/{self.id}'
+        Path(path).mkdir(parents=True, exist_ok=True)
+        return path
+
+    def create_image_name(self, file_name: str) -> str:
+        file_extension = file_name.split('.')[-1]
+        return f'game_image.{file_extension}'
+
+    
 
     def __str__(self) -> str:
         return self.title

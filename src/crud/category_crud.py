@@ -51,7 +51,14 @@ def update_category(
         db: Session, category_id: int, category: CategoryUpdate
     ) -> models.Category:
     db_category = get_category_by_id(db=db, category_id=category_id)
-    update_data = jsonable_encoder(category, exclude_unset=True)
+    games_id = category.games
+    update_data = jsonable_encoder(category, exclude={'games'}, exclude_unset=True)
+
+    if games_id:
+        db_category.games.clear()
+        for game_id in games_id:
+            game = game_crud.get_game_by_id(db=db, game_id=game_id)
+            db_category.games.append(game)
 
     for field in jsonable_encoder(db_category):
         if field in update_data:
@@ -69,3 +76,29 @@ def delete_category(db: Session, category_id: int):
     db.delete(db_category)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+def add_game_to_category(db: Session, catgory_id: int, game_id: int) -> models.Category:
+    db_category = get_category_by_id(db=db, category_id=catgory_id)
+    game = game_crud.get_game_by_id(db=db, game_id=game_id)
+    db_category.games.append(game)
+
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+
+    return db_category
+
+
+def remove_game_from_category(
+        db: Session, catgory_id: int, game_id: int
+    ) -> models.Category:
+    db_category = get_category_by_id(db=db, category_id=catgory_id)
+    game = game_crud.get_game_by_id(db=db, game_id=game_id)
+    db_category.games.remove(game)
+
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+
+    return db_category

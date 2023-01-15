@@ -1,6 +1,7 @@
 import datetime
+from pathlib import Path
 
-from fastapi import Response, status, HTTPException
+from fastapi import Response, status, HTTPException, UploadFile
 from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
@@ -83,3 +84,31 @@ def delete_game(db: Session, game_id: int):
     db.delete(db_game)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+def get_game_image_path(db: Session, game_id: int) -> str:
+    db_game = get_game_by_id(db=db, game_id=game_id)
+    image_path = db_game.image_path
+    is_exist = Path(image_path).exists() if image_path else False
+    if not (is_exist and is_exist):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail='Image not exist'
+        )
+    return image_path
+
+
+def upload_game_image(db: Session, game_id: int, image: UploadFile):
+    db_game = get_game_by_id(db=db, game_id=game_id)
+    image_path = db_game.create_image_path()
+    image_url = f'{image_path}/{db_game.create_image_name(file_name=image.filename)}'
+
+    with open(image_url, 'wb') as out_file:
+        content = image.file.read()
+        out_file.write(content)
+    
+    db_game.image_path = image_url
+
+    db.add(db_game)
+    db.commit()
+
+    return Response(status_code=status.HTTP_200_OK)

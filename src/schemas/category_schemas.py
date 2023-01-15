@@ -6,8 +6,7 @@ from src.schemas.user_schemas import UserNested
 
 class CategoryBase(BaseModel):
     title: str | None = None
-    user: int | None = Field(default=None, description='User id')
-    games: list[int] | None = Field(default=None, description='Games id')
+    games: list[int] | None = Field(default=[], description='Games id')
 
 
 class CategoryCreate(CategoryBase):
@@ -17,6 +16,10 @@ class CategoryCreate(CategoryBase):
 
 class CategoryUpdate(CategoryBase):
     pass
+
+
+class CategoryUpdateGame(BaseModel):
+    game: int
 
 
 class Category(CategoryBase):

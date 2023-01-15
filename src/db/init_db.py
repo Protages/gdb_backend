@@ -55,7 +55,6 @@ def init_db(db: Session):
 
     game_1 = Game(
         title='GTA 5',
-        img='/games/img/gta_5.png',
         description='GTA 5 the best game!',
         release=datetime.date(2017, 9, 11),
         developer='Rockstar Game',
@@ -65,7 +64,6 @@ def init_db(db: Session):
     )
     game_2 = Game(
         title='Battlefield 4',
-        img='/games/img/bf_4.png',
         description='Battlefield the best game!',
         release=datetime.date(2015, 10, 11),
         developer='EA DICE',
