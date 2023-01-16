@@ -114,8 +114,6 @@ class Game(Base):
         file_extension = file_name.split('.')[-1]
         return f'game_image.{file_extension}'
 
-    
-
     def __str__(self) -> str:
         return self.title
 

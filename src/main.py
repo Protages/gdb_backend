@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api_v1.api import api_v1_router
 from src.db.database import Base, SessionLocal, engine
@@ -10,6 +11,10 @@ from src.api_v1.exceptions import ObjectDoesNotExistException
 # Base.metadata.create_all(bind=engine)
 init_db(db=SessionLocal())
 
+origins = [
+    'http://localhost:8000',
+]
+
 app = FastAPI(
     # openapi_url='/api/v1/openapi.json',
     # docs_url='/api/v1/docs',
@@ -17,6 +22,13 @@ app = FastAPI(
     title='GDB App'
 )
 app.mount('/src/static', StaticFiles(directory='src/static'), name='static')
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 app.include_router(api_v1_router)
 
 
