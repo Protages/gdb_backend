@@ -11,3 +11,9 @@ def get_db():
         yield db
     except:
         db.close()
+
+
+class Pagination:
+    def __init__(self, size: int = 50, page: int = 1):
+        self.size = size
+        self.page = page

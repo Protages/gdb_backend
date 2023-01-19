@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.comment_schemas import Comment, CommentCreate, CommentUpdate
 from src.crud import comment_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -22,6 +22,16 @@ router = APIRouter(tags=['Comments'])
 async def read_comment_by_id(comment_id: int, db: Session = Depends(get_db)):
     comment = comment_crud.get_comment_by_id(db=db, comment_id=comment_id)
     return comment
+
+
+@router.get('/comment/all/', response_model=list[Comment])
+async def read_all_comments(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_comments = comment_crud.get_all_comments(
+        db=db, size=paginator.size, page=paginator.page
+    )
+    return db_comments
 
 
 @router.post('/comment', response_model=Comment)

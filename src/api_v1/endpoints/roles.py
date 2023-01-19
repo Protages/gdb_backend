@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.role_schemas import Role, RoleCreate, RoleUpdate
 from src.crud import role_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -21,6 +21,14 @@ router = APIRouter(tags=['Roles'])
 async def read_role(role_id: int, db: Session = Depends(get_db)):
     role = role_crud.get_role_by_id(db=db, role_id=role_id)
     return role
+
+
+@router.get('/role/all/', response_model=list[Role])
+async def read_all_roles(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_roles = role_crud.get_all_roles(db=db, size=paginator.size, page=paginator.page)
+    return db_roles
 
 
 @router.post('/role', response_model=Role)

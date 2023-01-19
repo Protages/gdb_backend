@@ -6,6 +6,7 @@ from sqlalchemy.sql import Update
 
 from src.schemas.platform_schemas import PlatformCreate, PlatformUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
+from src.crud.queries import pagination_query
 from src.models import models
 
 
@@ -15,6 +16,11 @@ def get_platform_by_id(db: Session, platform_id: int) -> models.Platform:
     if not db_platform:
         raise ObjectDoesNotExistException(obj_name='platform')
     return db_platform
+
+
+def get_all_platforms(db: Session, size: int, page: int) -> list[models.Platform]:
+    db_platforms = pagination_query(model=models.Platform, size=size, page=page, db=db)
+    return db_platforms
 
 
 def create_platform(db: Session, platform: PlatformCreate) -> models.Platform:

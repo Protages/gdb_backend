@@ -8,6 +8,7 @@ from src.schemas.grade_schemas import GradeCreate, GradeUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.api_v1.validators import unique_together_validator
 from src.crud import user_crud, game_crud
+from src.crud.queries import pagination_query
 from src.models import models
 
 
@@ -16,6 +17,11 @@ def get_grade_by_id(db: Session, grade_id: int) -> models.Grade:
     if not db_grade:
         raise ObjectDoesNotExistException(obj_name='grade')
     return db_grade
+
+
+def get_all_grades(db: Session, size: int, page: int) -> list[models.Grade]:
+    db_grades = pagination_query(model=models.Grade, size=size, page=page, db=db)
+    return db_grades
 
 
 def create_grade(db: Session, grade: GradeCreate) -> models.Grade:

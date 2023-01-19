@@ -6,6 +6,7 @@ from sqlalchemy.sql import Update
 
 from src.schemas.genre_schemas import GenreCreate, GenreUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
+from src.crud.queries import pagination_query
 from src.models import models
 
 
@@ -14,6 +15,11 @@ def get_genre_by_id(db: Session, genre_id: int) -> models.Genre:
     if not db_genre:
         raise ObjectDoesNotExistException(obj_name='genre')
     return db_genre
+
+
+def get_all_genres(db: Session, size: int, page: int) -> list[models.Genre]:
+    db_genres = pagination_query(model=models.Genre, size=size, page=page, db=db)
+    return db_genres
 
 
 def create_genre(db: Session, genre: GenreCreate) -> models.Genre:

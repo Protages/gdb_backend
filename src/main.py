@@ -34,7 +34,7 @@ app.include_router(api_v1_router)
 
 @app.get('/')
 async def root():
-    return {'msg': 'This is root path!'}
+    return {'msg': 'This is root path! To view docs go to http://127.0.0.1:8000/docs/'}
 
 
 @app.exception_handler(ObjectDoesNotExistException)

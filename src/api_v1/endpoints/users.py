@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.user_schemas import User, UserCreate, UserUpdate
 from src.crud import user_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -34,6 +34,14 @@ async def read_current_user(token: str = Depends(oauth2_scheme), db: Session = D
 async def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_id(db, user_id)
     return db_user
+
+
+@router.get('/user/all/', response_model=list[User])
+async def read_all_users(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_users = user_crud.get_all_users(db=db, size=paginator.size, page=paginator.page)
+    return db_users
 
 
 @router.post('/user', response_model=User)

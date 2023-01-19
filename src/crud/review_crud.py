@@ -6,6 +6,7 @@ from sqlalchemy.sql import Update
 
 from src.schemas.review_schemas import ReviewCreate, ReviewUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
+from src.crud.queries import pagination_query
 from src.models import models
 
 
@@ -14,6 +15,11 @@ def get_review_by_id(db: Session, review_id: int) -> models.Review:
     if not db_review:
         raise ObjectDoesNotExistException(obj_name='review')
     return db_review
+
+
+def get_all_reviews(db: Session, size: int, page: int) -> list[models.Review]:
+    db_reviews = pagination_query(model=models.Review, size=size, page=page, db=db)
+    return db_reviews
 
 
 def create_review(db: Session, review: ReviewCreate) -> models.Review:

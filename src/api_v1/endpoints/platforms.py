@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.platform_schemas import Platform, PlatformCreate, PlatformUpdate
 from src.crud import platform_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -22,6 +22,16 @@ router = APIRouter(tags=['Platforms'])
 async def read_platform_by_id(platform_id: int, db: Session = Depends(get_db)):
     db_platform = platform_crud.get_platform_by_id(db=db, platform_id=platform_id)
     return db_platform
+
+
+@router.get('/platform/all/', response_model=list[Platform])
+async def read_all_platform(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_platforms = platform_crud.get_all_platforms(
+        db=db, size=paginator.size, page=paginator.page
+    )
+    return db_platforms
 
 
 @router.post('/platform', response_model=Platform)

@@ -11,6 +11,7 @@ from src.schemas.game_schemas import GameCreate, GameUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 from src.crud import genre_crud, platform_crud
+from src.crud.queries import pagination_query
 
 
 def get_game_by_id(db: Session, game_id: int) -> models.Game:
@@ -18,6 +19,11 @@ def get_game_by_id(db: Session, game_id: int) -> models.Game:
     if not db_game:
         raise ObjectDoesNotExistException(obj_name='game')
     return db_game
+
+
+def get_all_games(db: Session, size: int, page: int) -> list[models.Game]:
+    db_games = pagination_query(model=models.Game, size=size, page=page, db=db)
+    return db_games
 
 
 def create_game(db: Session, game: GameCreate) -> models.Game:

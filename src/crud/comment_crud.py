@@ -8,6 +8,7 @@ from src.schemas.comment_schemas import CommentCreate, CommentUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 from src.crud import game_crud, review_crud, user_crud
+from src.crud.queries import pagination_query
 
 
 def get_comment_by_id(db: Session, comment_id: int) -> models.Comment:
@@ -16,6 +17,11 @@ def get_comment_by_id(db: Session, comment_id: int) -> models.Comment:
     if not db_comment:
         raise ObjectDoesNotExistException(obj_name='comment')
     return db_comment
+
+
+def get_all_comments(db: Session, size: int, page: int) -> list[models.Comment]:
+    db_comments = pagination_query(model=models.Comment, size=size, page=page, db=db)
+    return db_comments
 
 
 def create_comment(db: Session, comment: CommentCreate) -> models.Comment:

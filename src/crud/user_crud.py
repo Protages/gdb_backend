@@ -8,6 +8,7 @@ from src.models import models
 from src.schemas.user_schemas import UserCreate, UserUpdate
 from src.core.security import create_hashing_password
 from src.crud import role_crud
+from src.crud.queries import pagination_query
 from src.api_v1.validators import unique_validator
 from src.api_v1.exceptions import ObjectDoesNotExistException
 
@@ -24,6 +25,11 @@ def get_user_by_username(db: Session, username: str) -> models.User:
     if not db_user:
         raise ObjectDoesNotExistException(obj_name='user')
     return db_user
+
+
+def get_all_users(db: Session, size: int, page: int) -> list[models.User]:
+    db_users = pagination_query(model=models.User, size=size, page=page, db=db)
+    return db_users
 
 
 def create_user(db: Session, user: UserCreate) -> models.User:

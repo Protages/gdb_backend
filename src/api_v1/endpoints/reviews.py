@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.review_schemas import Review, ReviewCreate, ReviewUpdate
 from src.crud import review_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -22,6 +22,16 @@ router = APIRouter(tags=['Reviews'])
 async def read_review_by_id(review_id: int, db: Session = Depends(get_db)):
     db_review = review_crud.get_review_by_id(db=db, review_id=review_id)
     return db_review
+
+
+@router.get('/review/all/', response_model=list[Review])
+async def read_all_review(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_reviews = review_crud.get_all_reviews(
+        db=db, size=paginator.size, page=paginator.page
+    )
+    return db_reviews
 
 
 @router.post('/review', response_model=Review)

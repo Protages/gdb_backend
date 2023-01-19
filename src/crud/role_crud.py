@@ -6,6 +6,7 @@ from sqlalchemy.sql import Update
 
 from src.models import models
 from src.api_v1.exceptions import ObjectDoesNotExistException
+from src.crud.queries import pagination_query
 from src.schemas.role_schemas import RoleCreate, RoleUpdate, Role
 
 
@@ -14,6 +15,11 @@ def get_role_by_id(db: Session, role_id: int) -> models.Role:
     if not db_role:
         raise ObjectDoesNotExistException(obj_name='role')
     return db_role
+
+
+def get_all_roles(db: Session, size: int, page: int) -> list[models.Role]:
+    db_roles = pagination_query(model=models.Role, size=size, page=page, db=db)
+    return db_roles
 
 
 def create_role(db: Session, role: RoleCreate) -> models.Role:

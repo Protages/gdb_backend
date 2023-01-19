@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from src.models import models
 from src.schemas.game_schemas import Game, GameCreate, GameUpdate
 from src.crud import game_crud
-from src.api_v1.depends import get_db, oauth2_scheme
+from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
 from src.core.security import (
     authenticate_user, 
@@ -23,6 +23,14 @@ router = APIRouter(tags=['Games'])
 async def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
     db_game = game_crud.get_game_by_id(db=db, game_id=game_id)
     return db_game
+
+
+@router.get('/game/all/', response_model=list[Game])
+async def read_all_games(
+        paginator: Pagination = Depends(), db: Session = Depends(get_db)
+    ):
+    db_games = game_crud.get_all_games(db=db, size=paginator.size, page=paginator.page)
+    return db_games
 
 
 @router.post('/game', response_model=Game)

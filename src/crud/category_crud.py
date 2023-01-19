@@ -8,6 +8,7 @@ from src.schemas.category_schemas import CategoryCreate, CategoryUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.api_v1.validators import unique_together_validator
 from src.crud import user_crud, game_crud
+from src.crud.queries import pagination_query
 from src.models import models
 
 
@@ -17,6 +18,18 @@ def get_category_by_id(db: Session, category_id: int) -> models.Category:
     if not db_category:
         raise ObjectDoesNotExistException(obj_name='category')
     return db_category
+
+
+def get_all_categories(db: Session, size: int, page: int) -> list[models.Category]:
+    db_categories = pagination_query(model=models.Category, size=size, page=page, db=db)
+    return db_categories
+
+
+def get_categories_by_user_id(
+        db: Session, size: int, page: int, user_id: int
+    ) -> list[models.Category]:
+    db_categories = pagination_query(model=models.Category, size=size, page=page, db=db)
+    return db_categories
 
 
 def create_category(db: Session, category: CategoryCreate) -> models.Category:

@@ -8,6 +8,6 @@ __pycache__/
 .vscode/
 .idea/
 .migrations/
-static/
+# static/
 # .env.prod
 # .env.prod.db
