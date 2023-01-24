@@ -2,6 +2,7 @@ from pydantic import BaseModel, validator, Field
 
 from src.schemas.role_schemas import Role
 from src.api_v1.validators import email_validator
+from src.schemas.token_schemas import Token
 
 
 class UserBase(BaseModel):
@@ -48,6 +49,14 @@ class UserNested(UserBase):
     def roles_validator(cls, v) -> list[int]:
         res = [role.id for role in v]
         return res
+
+    class Config:
+        orm_mode = True
+
+
+class UserAndToken(BaseModel):
+    user: User
+    token: Token
 
     class Config:
         orm_mode = True

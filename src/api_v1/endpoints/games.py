@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from src.models import models
 from src.schemas.game_schemas import Game, GameCreate, GameUpdate
+from src.schemas.image_schemas import Image
 from src.crud import game_crud
 from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
@@ -52,20 +53,40 @@ async def delete_game(game_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    '/game/{game_id}/img', 
+    '/game/{game_id}/main_img', 
     response_class=FileResponse, 
     responses={
         200: {
             "content": {"image/png": {}},
-            "description": "Return the game image",
+            "description": "Return the game main image",
         }
     })
-async def get_game_image(game_id: int, db: Session = Depends(get_db)):
-    img_path = game_crud.get_game_image_path(db=db, game_id=game_id)
+async def get_game_main_image(game_id: int, db: Session = Depends(get_db)):
+    img_path = game_crud.get_game_main_image_path(db=db, game_id=game_id)
     return FileResponse(img_path, media_type="image/png")
 
 
-@router.post('/game/{game_id}/img', status_code=status.HTTP_200_OK)
-async def upload_game_image(game_id: int, image: UploadFile, db: Session = Depends(get_db)):
-    response = game_crud.upload_game_image(db=db, game_id=game_id, image=image)
+@router.post('/game/{game_id}/main_img', status_code=status.HTTP_204_NO_CONTENT)
+async def upload_game_main_image(
+        game_id: int, image: UploadFile, db: Session = Depends(get_db)
+    ):
+    response = game_crud.upload_game_main_image(db=db, game_id=game_id, image=image)
+    return response
+
+
+@router.get(
+    '/game/{game_id}/images', 
+    response_model=list[bytes], 
+    response_description="Returns an array of images in base64 format"
+)
+async def get_game_images_in_base64(game_id: int, db: Session = Depends(get_db)):
+    images_base64 = game_crud.get_game_images_base64(db=db, game_id=game_id)
+    return images_base64
+
+
+@router.post('/game/{game_id}/images', status_code=status.HTTP_204_NO_CONTENT)
+async def upload_game_images(
+        game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
+    ):
+    response = game_crud.upload_game_images(db=db, game_id=game_id, images=images)
     return response

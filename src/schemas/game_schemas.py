@@ -35,7 +35,7 @@ class GameUpdate(GameBase):
 
 class Game(GameBase):
     id: int
-    image_path: str
+    main_image_path: str
     reviews: list | None = []
     genres: list | None = []
     platforms: list | None = []
@@ -44,22 +44,3 @@ class Game(GameBase):
 
     class Config:
         orm_mode = True
-
-
-# class GameNested(GameBase):
-#     id: int
-#     genres: list | None = []
-#     platforms: list | None = []
-
-#     @validator('genres')
-#     def genres_validator(cls, v) -> list[int]:
-#         res = [genre.id for genre in v]
-#         return res
-    
-#     @validator('platforms')
-#     def platform_validator(cls, v) -> list[int]:
-#         res = [platform.id for platform in v]
-#         return res
-
-#     class Config:
-#         orm_mode = True

@@ -8,6 +8,7 @@ from sqlalchemy import (
     String, 
     Boolean, 
     Date, 
+    ARRAY,
     UniqueConstraint
 )
 from sqlalchemy.orm import relationship
@@ -86,7 +87,8 @@ class Game(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    image_path = Column(String, default=default_image_url)
+    main_image_path = Column(String, default=default_image_url)
+    images = relationship('Image', back_populates='game')
     genres = relationship('Genre', secondary=game_genre, back_populates='games')
     platforms = relationship(
         'Platform', secondary=game_platform, back_populates='games'
@@ -110,12 +112,26 @@ class Game(Base):
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
 
-    def create_image_name(self, file_name: str) -> str:
+    def create_main_image_name(self, file_name: str) -> str:
         file_extension = file_name.split('.')[-1]
-        return f'game_image.{file_extension}'
+        return f'main_image.{file_extension}'
 
     def __str__(self) -> str:
         return self.title
+
+
+class Image(Base):
+    id = Column(Integer, primary_key=True, index=True)
+    image_path = Column(String)
+    game_id = Column(Integer, ForeignKey('game.id'))
+    game = relationship('Game', back_populates='images')
+
+    def create_image_name(self, indx: int, file_name: str) -> str:
+        file_extension = file_name.split('.')[-1]
+        return f'img_{indx + 1}.{file_extension}'
+
+    def __str__(self) -> str:
+        return f'Image {self.image_path}'
 
 
 class Review(Base):

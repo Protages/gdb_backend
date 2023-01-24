@@ -64,7 +64,7 @@ def create_access_token(db: Session, subject: str, expires_delta: timedelta | No
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=30)
+        expire = datetime.utcnow() + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"exp": expire, "sub": subject}
     encoded_jwt = jwt.encode(
         claims=to_encode, key=config.SECRET_KEY, algorithm=config.ALGORITHM

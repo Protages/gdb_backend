@@ -1,3 +1,4 @@
+import base64
 import datetime
 from pathlib import Path
 
@@ -92,29 +93,72 @@ def delete_game(db: Session, game_id: int):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-def get_game_image_path(db: Session, game_id: int) -> str:
+def get_game_main_image_path(db: Session, game_id: int) -> str:
     db_game = get_game_by_id(db=db, game_id=game_id)
-    image_path = db_game.image_path
+    image_path = db_game.main_image_path
     is_exist = Path(image_path).exists() if image_path else False
-    if not (is_exist and is_exist):
+    if not is_exist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail='Image not exist'
         )
     return image_path
 
 
-def upload_game_image(db: Session, game_id: int, image: UploadFile):
+def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
-    image_url = f'{image_path}/{db_game.create_image_name(file_name=image.filename)}'
+    iamge_name = db_game.create_main_image_name(file_name=image.filename)
+    image_url = f'{image_path}/{iamge_name}'
 
     with open(image_url, 'wb') as out_file:
         content = image.file.read()
         out_file.write(content)
     
-    db_game.image_path = image_url
+    db_game.main_image_path = image_url
 
     db.add(db_game)
+    db.commit()
+
+    return Response(status_code=status.HTTP_200_OK)
+
+
+def get_game_images_base64(db: Session, game_id: int) -> list[bytes]:
+    db_game = get_game_by_id(db=db, game_id=game_id)
+    db_images = db_game.images
+    images_base64 = []
+
+    for db_image in db_images:
+        image_path = db_image.image_path
+        is_exist = Path(image_path).exists() if image_path else False
+        if not is_exist:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail='Image not exist'
+            )
+        with open(image_path, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read())
+            images_base64.append(img_base64)
+
+    return images_base64
+
+
+def upload_game_images(db: Session, game_id: int, images: list[UploadFile]):
+    db_game = get_game_by_id(db=db, game_id=game_id)
+    image_path = db_game.create_image_path()
+
+    for indx in range(len(images)):
+        db_image = models.Image(game_id=db_game.id)
+        iamge_name = db_image.create_image_name(
+            indx=indx, file_name=images[indx].filename
+        )
+        image_url = f'{image_path}/{iamge_name}'
+
+        with open(image_url, 'wb') as out_file:
+            content = images[indx].file.read()
+            out_file.write(content)
+        
+        db_image.image_path = image_url
+        db.add(db_image)
+
     db.commit()
 
     return Response(status_code=status.HTTP_200_OK)

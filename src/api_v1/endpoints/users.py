@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from src.models import models
-from src.schemas.user_schemas import User, UserCreate, UserUpdate
+from src.schemas.user_schemas import User, UserCreate, UserUpdate, UserAndToken
 from src.crud import user_crud
 from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core import config
@@ -44,10 +44,15 @@ async def read_all_users(
     return db_users
 
 
-@router.post('/user', response_model=User)
+@router.post('/user', response_model=UserAndToken)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = user_crud.create_user(db, user)
-    return db_user
+    access_token = create_access_token(db=db, subject=user.username)
+    response = {
+        'user': db_user,
+        'token': {'access_token': access_token, 'token_type': config.TOKEN_TYPE}
+    }
+    return response
 
 
 @router.put('/user/{user_id}', response_model=User)

@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, validator
 class GameNested(BaseModel):
     id: int
     title: str | None = None
-    image_path: str | None = None
+    main_image_path: str | None = None
     description: str | None = None
     release: datetime.date | None = None
     developer: str | None = None

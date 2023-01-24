@@ -28,7 +28,10 @@ def get_all_categories(db: Session, size: int, page: int) -> list[models.Categor
 def get_categories_by_user_id(
         db: Session, size: int, page: int, user_id: int
     ) -> list[models.Category]:
-    db_categories = pagination_query(model=models.Category, size=size, page=page, db=db)
+    filter = models.Category.user_id == user_id 
+    db_categories = pagination_query(
+        model=models.Category, size=size, page=page, filter=filter, db=db
+    )
     return db_categories
 
 
