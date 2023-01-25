@@ -12,6 +12,23 @@ from src.core import config
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+class CustomTransaction:
+    """Context Manager that implements transactions in the database"""
+
+    def __init__(self, db: Session) -> None:
+        self.db = db
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
+        if exc_type is not None:
+            self.db.rollback()
+            return False
+
+        self.db.commit()
+        return True
+
 
 def create_hashing_password(plain_password: str) -> str:
     '''Хеширует полученный "сырой" пароль'''

@@ -84,9 +84,27 @@ async def get_game_images_in_base64(game_id: int, db: Session = Depends(get_db))
     return images_base64
 
 
-@router.post('/game/{game_id}/images', status_code=status.HTTP_204_NO_CONTENT)
+@router.post(
+    '/game/{game_id}/images', 
+    status_code=status.HTTP_204_NO_CONTENT, 
+    description='Remove all old game images(!), and upload new images'
+)
 async def upload_game_images(
         game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
     ):
     response = game_crud.upload_game_images(db=db, game_id=game_id, images=images)
+    return response
+
+
+@router.patch(
+    '/game/{game_id}/images', 
+    status_code=status.HTTP_204_NO_CONTENT, 
+    description='Add new images to game, keeps old images'
+)
+async def add_images_to_game(
+        game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
+    ):
+    response = game_crud.upload_game_images(
+        db=db, game_id=game_id, images=images, patch=True
+    )
     return response

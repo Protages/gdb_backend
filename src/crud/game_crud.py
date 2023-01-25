@@ -13,6 +13,7 @@ from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.models import models
 from src.crud import genre_crud, platform_crud
 from src.crud.queries import pagination_query
+from src.core.security import CustomTransaction
 
 
 def get_game_by_id(db: Session, game_id: int) -> models.Game:
@@ -104,6 +105,18 @@ def get_game_main_image_path(db: Session, game_id: int) -> str:
     return image_path
 
 
+def remove_all_old_game_images(db: Session, db_game: models.Game, image_path: str):
+    db_images: list[models.Image] = db_game.images
+
+    with CustomTransaction(db=db):
+        [db.delete(db_image) for db_image in db_images]
+        db.commit()
+
+        for f in Path(image_path).glob(f'{db_game.img_name_prefix}*'):
+            if f.is_file():
+                f.unlink()
+
+
 def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
@@ -130,25 +143,30 @@ def get_game_images_base64(db: Session, game_id: int) -> list[bytes]:
     for db_image in db_images:
         image_path = db_image.image_path
         is_exist = Path(image_path).exists() if image_path else False
-        if not is_exist:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail='Image not exist'
-            )
-        with open(image_path, "rb") as img_file:
-            img_base64 = base64.b64encode(img_file.read())
-            images_base64.append(img_base64)
+        if is_exist:
+            with open(image_path, "rb") as img_file:
+                img_base64 = base64.b64encode(img_file.read())
+                images_base64.append(img_base64)
 
     return images_base64
 
 
-def upload_game_images(db: Session, game_id: int, images: list[UploadFile]):
+def upload_game_images(
+        db: Session, game_id: int, images: list[UploadFile], patch: bool = False
+    ):
     db_game = get_game_by_id(db=db, game_id=game_id)
+    game_images_len = len(db_game.images) if patch else 0
     image_path = db_game.create_image_path()
+
+    if not patch:
+        remove_all_old_game_images(db=db, db_game=db_game, image_path=image_path)
 
     for indx in range(len(images)):
         db_image = models.Image(game_id=db_game.id)
         iamge_name = db_image.create_image_name(
-            indx=indx, file_name=images[indx].filename
+            indx=indx + game_images_len, 
+            img_name_prefix=db_game.img_name_prefix,
+            file_name=images[indx].filename
         )
         image_url = f'{image_path}/{iamge_name}'
 

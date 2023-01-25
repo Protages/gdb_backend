@@ -8,7 +8,7 @@ from sqlalchemy import (
     String, 
     Boolean, 
     Date, 
-    ARRAY,
+    # ARRAY, # Dosn't work with SQLite (only Postresql)
     UniqueConstraint
 )
 from sqlalchemy.orm import relationship
@@ -83,11 +83,12 @@ game_category = Table(
 
 
 class Game(Base):
-    default_image_url = 'src/static/img/games/default.png'
+    img_name_prefix = 'img_'
+    default_main_image_url = 'src/static/img/games/default.png'
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
-    main_image_path = Column(String, default=default_image_url)
+    main_image_path = Column(String, default=default_main_image_url)
     images = relationship('Image', back_populates='game')
     genres = relationship('Genre', secondary=game_genre, back_populates='games')
     platforms = relationship(
@@ -126,9 +127,11 @@ class Image(Base):
     game_id = Column(Integer, ForeignKey('game.id'))
     game = relationship('Game', back_populates='images')
 
-    def create_image_name(self, indx: int, file_name: str) -> str:
+    def create_image_name(
+            self, img_name_prefix: str, indx: int, file_name: str
+        ) -> str:
         file_extension = file_name.split('.')[-1]
-        return f'img_{indx + 1}.{file_extension}'
+        return f'{img_name_prefix}{indx + 1}.{file_extension}'
 
     def __str__(self) -> str:
         return f'Image {self.image_path}'
