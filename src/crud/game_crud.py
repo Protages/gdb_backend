@@ -105,7 +105,9 @@ def get_game_main_image_path(db: Session, game_id: int) -> str:
     return image_path
 
 
-def remove_all_old_game_images(db: Session, db_game: models.Game, image_path: str):
+def remove_all_old_game_images(
+        db: Session, db_game: models.Game, image_path: str
+    ) -> None:
     db_images: list[models.Image] = db_game.images
 
     with CustomTransaction(db=db):
