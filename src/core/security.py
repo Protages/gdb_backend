@@ -25,8 +25,6 @@ class CustomTransaction:
         if exc_type is not None:
             self.db.rollback()
             return False
-
-        self.db.commit()
         return True
 
 
@@ -59,14 +57,12 @@ def authenticate_user_by_token(db: Session, token: str) -> models.User | HTTPExc
         username: str = payload.get('sub')
         expire: int = payload.get('exp')
     except JWTError:
-        # return False
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="JWT token has expired",
             headers={"WWW-Authenticate": "Bearer"},
         )
     if not (username and expire):
-        # return False
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="JWT token has incomplete payload",

@@ -18,6 +18,8 @@ from src.core.security import create_hashing_password
 
 
 def init_db(db: Session):
+    '''Deletes all tables and creates them again. Add the mvp data to the database.'''
+
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 

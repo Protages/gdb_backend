@@ -8,6 +8,8 @@ __pycache__/
 .vscode/
 .idea/
 .migrations/
+alembic/versions/*
+!alembic/versions/.gitkeep
 # static/
 # .env.prod
 # .env.prod.db
