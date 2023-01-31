@@ -15,3 +15,6 @@ sqlalchemy_utils==0.39.0
 pytest==7.2.1
 
 celery==5.2.7
+Redis==4.4.2
+httpx==0.23.3
+Jinja2==3.1.2

@@ -34,6 +34,7 @@ class UserUpdate(UserBase):
 class User(UserBase):
     id: int
     username: str
+    is_email_confirmed: bool | None
     roles: list[Role] | None = []
 
     class Config:
@@ -43,6 +44,7 @@ class User(UserBase):
 class UserNested(UserBase):
     id: int
     username: str
+    is_email_confirmed: bool
     roles: list | None = []
 
     @validator('roles')

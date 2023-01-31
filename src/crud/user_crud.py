@@ -1,3 +1,7 @@
+import hashlib
+import random
+from typing import Tuple
+
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
 
@@ -32,7 +36,7 @@ def get_all_users(db: Session, size: int, page: int) -> list[models.User]:
     return db_users
 
 
-def create_user(db: Session, user: UserCreate) -> models.User:
+def create_user(db: Session, user: UserCreate) -> Tuple[models.User, str]:
     unique_validator(model=models.User, obj=user, field_name='username', db=db)
     unique_validator(model=models.User, obj=user, field_name='email', db=db)
 
@@ -45,10 +49,18 @@ def create_user(db: Session, user: UserCreate) -> models.User:
     for role_id in roles_id:
         role = role_crud.get_role_by_id(db=db, role_id=role_id)
         db_user.roles.append(role)
+
+    token = random.randbytes(10)
+    hashedCode = hashlib.sha256()
+    hashedCode.update(token)
+    verification_code = hashedCode.hexdigest()
+    db_user.verification_email_code = verification_code
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+
+    return db_user, verification_code
 
 
 def update_user(db: Session, user_id: int, update_user: UserUpdate) -> models.User:
@@ -82,12 +94,6 @@ def update_user(db: Session, user_id: int, update_user: UserUpdate) -> models.Us
     db.refresh(db_user)
 
     return db_user
-
-    # res = db.execute(
-    #     Update(models.User)
-    #     .where(models.User.id == user_id)
-    #     .values(**update_data)
-    # )
 
 
 def delete_user(db: Session, user_id: int):

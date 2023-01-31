@@ -9,7 +9,7 @@ from src.db.init_db import init_db
 from src.api_v1.exceptions import ObjectDoesNotExistException
 
 # Base.metadata.create_all(bind=engine)
-# init_db(db=SessionLocal())
+init_db(db=SessionLocal())
 
 origins = [
     'http://localhost:8000',
