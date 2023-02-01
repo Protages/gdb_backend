@@ -14,12 +14,18 @@ def email_validator(email: str) -> bool:
 def unique_validator(
         model: Any, obj: Any, field_name: str, db: Session
     ) -> HTTPException | None:
-    if not getattr(obj, field_name, False):
-        return None
+    if not hasattr(obj, field_name):
+        raise Exception(f'Sent obj does not have {field_name} field')
 
     objects = db.query(model).all()
     for o in objects:
-        if getattr(o, field_name) == getattr(obj, field_name):
+        value = getattr(o, field_name, False)
+        if not value:
+            raise Exception(
+                f'Object of this model do not have {field_name} field'
+            )
+
+        if value == getattr(obj, field_name):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, 
                 detail=f'{field_name} field must be uniqe'
@@ -44,13 +50,27 @@ def unique_together_validator(
         if bool(re.fullmatch(regex_for_id, second_field_name)):
             obj_second_field_name = second_field_name[:-3]
 
-    if not (getattr(obj, obj_first_field_name, False) and getattr(obj, obj_second_field_name, False)):
-        return None
+    if not hasattr(obj, obj_first_field_name):
+        raise Exception(f'Sent obj does not have {obj_first_field_name} field')
+    elif not hasattr(obj, obj_second_field_name):
+        raise Exception(f'Sent obj does not have {obj_second_field_name} field')
     
     objects = db.query(model).all()
     for o in objects:
-        is_first_fields_equal = getattr(o, first_field_name) == getattr(obj, obj_first_field_name)
-        is_second_fields_equal = getattr(o, second_field_name) == getattr(obj, obj_second_field_name)
+        first_value = getattr(o, first_field_name, None)
+        second_value = getattr(o, second_field_name, None)
+
+        if not first_value:
+            raise Exception(
+                f'Object of this model do not have {obj_first_field_name} field'
+            )
+        elif not second_value:
+            raise Exception(
+                f'Object of this model do not have {obj_second_field_name} field'
+            )
+
+        is_first_fields_equal = first_value == getattr(obj, obj_first_field_name)
+        is_second_fields_equal = second_value == getattr(obj, obj_second_field_name)
         if is_first_fields_equal and is_second_fields_equal:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, 
