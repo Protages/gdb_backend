@@ -1,7 +1,3 @@
-import hashlib
-import random 
-from datetime import datetime, timedelta
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -48,8 +44,16 @@ async def read_all_users(
 
 
 @router.get('/user/verification_email/{verification_code}')
-async def verification_email(verification_code: str):
-    pass
+async def verification_email(verification_code: str, db: Session = Depends(get_db)):
+    db_user = user_crud.get_user_by_verification_code(
+        db=db, verification_code=verification_code
+    )
+    if not db_user.is_email_confirmed:
+        db_user.is_email_confirmed = True
+        db.add(db_user)
+        db.commit()
+    
+    return {'Email was successfully verified'}
 
 
 @router.post('/user', response_model=UserAndToken)

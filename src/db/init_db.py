@@ -14,7 +14,7 @@ from src.models.models import (
     Grade, 
     Category
 )
-from src.core.security import create_hashing_password
+from src.core.security import create_hashing_password, create_verification_email_code
 
 
 def init_db(db: Session):
@@ -26,6 +26,7 @@ def init_db(db: Session):
     user_admin = User(
         username='admin',
         hashed_password=create_hashing_password('mypass'),
+        verification_email_code=create_verification_email_code(),
         email='admin@a.ru',
         about='Just my admin',
         rating=10,
@@ -34,6 +35,7 @@ def init_db(db: Session):
     user_2 = User(
         username='Jony',
         hashed_password=create_hashing_password('mypass'),
+        verification_email_code=create_verification_email_code(),
         email='jony@a.ru',
         about='Just my profile',
         rating=3
@@ -41,6 +43,7 @@ def init_db(db: Session):
     user_3 = User(
         username='Dany',
         hashed_password=create_hashing_password('mypass'),
+        verification_email_code=create_verification_email_code(),
         email='dany@a.ru',
         about='Just my profile',
         rating=5

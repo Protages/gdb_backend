@@ -1,3 +1,5 @@
+import random
+import hashlib
 from datetime import datetime, timedelta
 
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -83,3 +85,14 @@ def create_access_token(db: Session, subject: str, expires_delta: timedelta | No
         claims=to_encode, key=config.SECRET_KEY, algorithm=config.ALGORITHM
     )
     return encoded_jwt
+
+
+def create_verification_email_code(lenght: int = 10) -> str:
+    '''Creates a unique encrypted email verification code'''
+
+    token = random.randbytes(lenght)
+    hashedCode = hashlib.sha256()
+    hashedCode.update(token)
+    verification_code = hashedCode.hexdigest()
+    
+    return verification_code

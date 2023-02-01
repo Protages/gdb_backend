@@ -1,5 +1,3 @@
-import hashlib
-import random
 from typing import Tuple
 
 from fastapi import Response, status
@@ -10,7 +8,7 @@ from sqlalchemy.sql import Update
 
 from src.models import models
 from src.schemas.user_schemas import UserCreate, UserUpdate
-from src.core.security import create_hashing_password
+from src.core.security import create_hashing_password, create_verification_email_code
 from src.crud import role_crud
 from src.crud.queries import pagination_query
 from src.api_v1.validators import unique_validator
@@ -26,6 +24,15 @@ def get_user_by_id(db: Session, user_id: int) -> models.User:
 
 def get_user_by_username(db: Session, username: str) -> models.User:
     db_user = db.query(models.User).filter(models.User.username == username).first()
+    if not db_user:
+        raise ObjectDoesNotExistException(obj_name='user')
+    return db_user
+
+
+def get_user_by_verification_code(db: Session, verification_code: str) -> models.User:
+    db_user = db.query(models.User).filter(
+        models.User.verification_email_code == verification_code
+    ).first()
     if not db_user:
         raise ObjectDoesNotExistException(obj_name='user')
     return db_user
@@ -50,10 +57,7 @@ def create_user(db: Session, user: UserCreate) -> Tuple[models.User, str]:
         role = role_crud.get_role_by_id(db=db, role_id=role_id)
         db_user.roles.append(role)
 
-    token = random.randbytes(10)
-    hashedCode = hashlib.sha256()
-    hashedCode.update(token)
-    verification_code = hashedCode.hexdigest()
+    verification_code = create_verification_email_code()
     db_user.verification_email_code = verification_code
 
     db.add(db_user)
