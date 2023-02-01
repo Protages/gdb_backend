@@ -10,6 +10,7 @@ __pycache__/
 .migrations/
 alembic/versions/*
 !alembic/versions/.gitkeep
+.env.dev
+.env.prod
 # static/
-# .env.prod
 # .env.prod.db

@@ -1,11 +1,38 @@
-# Authenfication
-SECRET_KEY = "45103f2bb071e93009da9fb98b15e025a7bc24228112d72c50a67d46c4f1fbcd"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-TOKEN_TYPE = 'baerer'
+from functools import lru_cache
 
-# Service email
-EMAIL_URL = 'https://api.sendinblue.com/v3/smtp/email'
-EMAIL_API_KEY = ''
-EMAIL_FROM = 'game.database@play.com'
-EMAIL_NAME = 'Game DataBase'
+from pydantic import BaseSettings, EmailStr, HttpUrl
+
+
+class Settings(BaseSettings):
+    # CORS
+    ALLOW_ORIGINS: list[str] = ['*']
+    ALLOW_METHODS: list[str] = ['*']
+    ALLOW_HEADERS: list[str] = ['*']
+    ALLOW_CREDENTIALS: bool = True
+
+    # Authenfication
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    TOKEN_TYPE: str = 'baerer'
+
+    # Celery config
+    BROKER_URL: str
+    RESULT_BACKEND_URL: str
+
+    # Service email
+    EMAIL_URL: HttpUrl = 'https://api.sendinblue.com/v3/smtp/email'
+    EMAIL_API_KEY: str
+    EMAIL_FROM: EmailStr = 'game.database@play.com'
+    EMAIL_NAME: str = 'Game DataBase'
+
+    class Config:
+        env_file = '.env.dev'
+
+
+@lru_cache
+def get_settigns() -> Settings:
+    return Settings()
+
+
+settings = get_settigns()

@@ -1,4 +1,7 @@
-broker_url = 'redis://127.0.0.1:16379'
-result_backend = 'redis://127.0.0.1:16379'
+from src.core.config import settings
+
+
+broker_url = settings.BROKER_URL
+result_backend = settings.RESULT_BACKEND_URL
 
 imports = ['src.core.celery.tasks']

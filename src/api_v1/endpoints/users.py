@@ -6,8 +6,8 @@ from src.models import models
 from src.schemas.user_schemas import User, UserCreate, UserUpdate, UserAndToken
 from src.crud import user_crud
 from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
 from src.core.celery.tasks import send_email_confirm_notification
+from src.core.config import settings
 from src.core.security import (
     authenticate_user, 
     authenticate_user_by_token, 
@@ -18,7 +18,9 @@ router = APIRouter(tags=['Users'])
 
 
 @router.get('/user/me', response_model=User)
-async def read_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def read_current_user(
+        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    ):
     db_user = authenticate_user_by_token(db=db, token=token)
     if not db_user:
         raise HTTPException(
@@ -59,10 +61,10 @@ async def verification_email(verification_code: str, db: Session = Depends(get_d
 @router.post('/user', response_model=UserAndToken)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user, verification_code = user_crud.create_user(db, user)
-    access_token = create_access_token(db=db, subject=user.username)
+    access_token = create_access_token(subject=user.username)
     response = {
         'user': db_user,
-        'token': {'access_token': access_token, 'token_type': config.TOKEN_TYPE}
+        'token': {'access_token': access_token, 'token_type': settings.TOKEN_TYPE}
     }
 
     verification_url = f'http://127.0.0.1:8000/api/v1/user/verification_email/{verification_code}'

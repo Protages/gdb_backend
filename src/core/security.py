@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from src.models import models
 from src.crud import user_crud
-from src.core import config
+from src.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -54,7 +54,7 @@ def authenticate_user_by_token(db: Session, token: str) -> models.User | HTTPExc
     '''Проверят валиден ли токен и возвращает соотв юзера'''
     try:
         payload = jwt.decode(
-            token=token, key=config.SECRET_KEY, algorithms=config.ALGORITHM
+            token=token, key=settings.SECRET_KEY, algorithms=settings.ALGORITHM
         )
         username: str = payload.get('sub')
         expire: int = payload.get('exp')
@@ -74,15 +74,16 @@ def authenticate_user_by_token(db: Session, token: str) -> models.User | HTTPExc
     return db_user
 
 
-def create_access_token(db: Session, subject: str, expires_delta: timedelta | None = None) -> str:
+def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
     '''Создает jwt-token на основе переданного subject и expires_delta'''
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.utcnow() + \
+                 timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = {"exp": expire, "sub": subject}
     encoded_jwt = jwt.encode(
-        claims=to_encode, key=config.SECRET_KEY, algorithm=config.ALGORITHM
+        claims=to_encode, key=settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )
     return encoded_jwt
 
