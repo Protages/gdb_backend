@@ -58,7 +58,21 @@ async def verification_email(verification_code: str, db: Session = Depends(get_d
     return {'Email was successfully verified'}
 
 
-@router.post('/user', response_model=UserAndToken)
+@router.post(
+    '/user', 
+    response_model=UserAndToken, 
+    status_code=status.HTTP_201_CREATED, 
+    description='''
+    Valid username must be:
+    1. Username is 4-32 characters long
+    2. No _,- or . at the beginning and end
+    3. No __ or . or . or .. or .- or _- inside
+    Valid password must be:
+    1. At least 6 characters
+    2. Allowed: A-Z, a-z, 0-9, @#$%^&+=
+    3. At least one letter
+    '''
+)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user, verification_code = user_crud.create_user(db, user)
     access_token = create_access_token(subject=user.username)

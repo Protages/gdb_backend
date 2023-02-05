@@ -1,22 +1,19 @@
 from pydantic import BaseModel, validator, Field
 
 from src.schemas.role_schemas import Role
-from src.api_v1.validators import email_validator
+from src.api_v1.validators import (
+    email_validator, 
+    username_validator,
+    password_validator
+)
 from src.schemas.token_schemas import Token
 
 
 class UserBase(BaseModel):
-    email: str | None = Field(default=None, example='example@gmail.com')
     about: str | None = None
     rating: int | None = None
     is_active: bool | None = Field(default=True)
     is_superuser: bool | None = Field(default=False)
-
-    @validator('email')
-    def email_valid(cls, v):
-        if not email_validator(v):
-            raise ValueError('Email is not valid')
-        return v
 
 
 class UserCreate(UserBase):
@@ -25,15 +22,40 @@ class UserCreate(UserBase):
     password: str
     roles: list[int] | None = Field(default=[], description='Roles id')
 
+    @validator('email')
+    def email_valid(cls, v):
+        if not email_validator(v):
+            raise ValueError('Email is not valid')
+        return v
+
+    @validator('username')
+    def username_valid(cls, v):
+        if not username_validator(v):
+            raise ValueError('Username is not valid')
+        return v
+
+    @validator('password')
+    def password_valid(cls, v):
+        if not password_validator(v):
+            raise ValueError('Password is not valid')
+        return v
+
 
 class UserUpdate(UserBase):
     password: str | None = None
     roles: list[int] | None = Field(default=[], description='Roles id')
 
+    @validator('password')
+    def password_valid(cls, v):
+        if not password_validator(v):
+            raise ValueError('Password is not valid')
+        return v
+
 
 class User(UserBase):
     id: int
     username: str
+    email: str
     is_email_confirmed: bool | None
     roles: list[Role] | None = []
 
@@ -44,6 +66,7 @@ class User(UserBase):
 class UserNested(UserBase):
     id: int
     username: str
+    email: str
     is_email_confirmed: bool
     roles: list | None = []
 

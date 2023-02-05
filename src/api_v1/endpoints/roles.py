@@ -31,13 +31,13 @@ async def read_all_roles(
     return db_roles
 
 
-@router.post('/role', response_model=Role)
+@router.post('/role', response_model=Role, status_code=status.HTTP_201_CREATED)
 async def create_role(role: RoleCreate, db: Session = Depends(get_db)):
     role = role_crud.create_role(db=db, role=role)
     return role
 
 
-@router.put('/role', response_model=Role)
+@router.put('/role/{role_id}', response_model=Role)
 async def update_role(role_id: int, role: RoleUpdate, db: Session = Depends(get_db)):
     role = role_crud.update_role(db=db, role_id=role_id, role=role)
     return role

@@ -34,7 +34,7 @@ async def read_all_platform(
     return db_platforms
 
 
-@router.post('/platform', response_model=Platform)
+@router.post('/platform', response_model=Platform, status_code=status.HTTP_201_CREATED)
 async def create_platform(platform: PlatformCreate, db: Session = Depends(get_db)):
     db_platform = platform_crud.create_platform(db=db, platform=platform)
     return db_platform

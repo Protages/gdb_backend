@@ -49,7 +49,7 @@ async def read_all_categories_by_user_id(
     return db_categories
 
 
-@router.post('/category', response_model=Category)
+@router.post('/category', response_model=Category, status_code=status.HTTP_201_CREATED)
 async def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
     db_category = category_crud.create_category(db=db, category=category)
     return db_category

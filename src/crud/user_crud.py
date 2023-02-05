@@ -68,9 +68,6 @@ def create_user(db: Session, user: UserCreate) -> Tuple[models.User, str]:
 
 
 def update_user(db: Session, user_id: int, update_user: UserUpdate) -> models.User:
-    unique_validator(model=models.User, obj=update_user, field_name='username', db=db)
-    unique_validator(model=models.User, obj=update_user, field_name='email', db=db)
-
     db_user = get_user_by_id(db=db, user_id=user_id)
     roles_id = update_user.roles
 

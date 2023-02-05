@@ -34,7 +34,7 @@ async def read_all_games(
     return db_games
 
 
-@router.post('/game', response_model=Game)
+@router.post('/game', response_model=Game, status_code=status.HTTP_201_CREATED)
 async def create_game(game: GameCreate, db: Session = Depends(get_db)):
     db_game = game_crud.create_game(db=db, game=game)
     return db_game

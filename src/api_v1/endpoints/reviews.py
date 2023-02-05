@@ -34,7 +34,7 @@ async def read_all_review(
     return db_reviews
 
 
-@router.post('/review', response_model=Review)
+@router.post('/review', response_model=Review, status_code=status.HTTP_201_CREATED)
 async def create_review(review: ReviewCreate, db: Session = Depends(get_db)):
     db_review = review_crud.create_review(db=db, review=review)
     return db_review

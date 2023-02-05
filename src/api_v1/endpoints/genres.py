@@ -31,7 +31,7 @@ async def read_all_genres(paginator: Pagination = Depends(), db: Session = Depen
 
 
 
-@router.post('/genre', response_model=Genre)
+@router.post('/genre', response_model=Genre, status_code=status.HTTP_201_CREATED)
 async def create_genre(genre: GenreCreate, db: Session = Depends(get_db)):
     genre = genre_crud.create_genre(db=db, genre=genre)
     return genre

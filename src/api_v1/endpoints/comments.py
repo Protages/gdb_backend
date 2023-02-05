@@ -34,7 +34,7 @@ async def read_all_comments(
     return db_comments
 
 
-@router.post('/comment', response_model=Comment)
+@router.post('/comment', response_model=Comment, status_code=status.HTTP_201_CREATED)
 async def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
     comment = comment_crud.create_comment(db=db, comment=comment)
     return comment

@@ -2,13 +2,34 @@ import re
 from typing import Any
 
 from fastapi import HTTPException, status
-
 from sqlalchemy.orm import Session
 
 
 def email_validator(email: str) -> bool:
     email_regex = '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
     return bool(re.fullmatch(email_regex, email))
+
+
+def username_validator(username: str) -> bool:
+    '''
+    - Username is 4-32 characters long
+    - No _,- or . at the beginning and end
+    - No __ or . or . or .. or .- or _- inside
+    '''
+    username_regex = "^(?=.{4,32}$)(?![_.-])(?!.*[_.]{2})[a-zA-Z0-9._-]+(?<![_.])$"
+    return bool(re.fullmatch(username_regex, username))
+
+
+def password_validator(password: str) -> bool:
+    '''
+    - At least 6 characters
+    - Allowed: A-Z, a-z, 0-9, @#$%^&+=
+    - At least one letter
+    '''
+    password_regex = "[A-Za-z0-9@#$%^&+=]{6,}"
+    if all(char in '0123456789' for char in password):
+        return False
+    return bool(re.fullmatch(password_regex, password))
 
 
 def unique_validator(

@@ -34,7 +34,7 @@ async def read_all_grades(
     return db_grades
 
 
-@router.post('/grade', response_model=Grade)
+@router.post('/grade', response_model=Grade, status_code=status.HTTP_201_CREATED)
 async def create_grade(grade: GradeCreate, db: Session = Depends(get_db)):
     db_grade = grade_crud.create_grade(db=db, grade=grade)
     return db_grade
