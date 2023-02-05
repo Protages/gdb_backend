@@ -1,3 +1,5 @@
+# After all these tests, we have users with id: 2
+
 import pytest
 
 from fastapi.testclient import TestClient
