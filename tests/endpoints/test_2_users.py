@@ -158,6 +158,7 @@ def test_create_user(test_client: TestClient, request_data, response_data):
     assert response.json()['user'] == response_data['user']
     assert response.json()['token']['token_type'] == response_data['token']['token_type']
     assert response.json()['token'].get('access_token', False)
+    assert len(response.json()['token'].get('access_token')) > 15
 
 
 @pytest.mark.parametrize(
