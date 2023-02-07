@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from src.main import app
 from src.db.database import Base
+from src.core import config
 from src.api_v1 import depends
 from tests.utils import tmp_database, DEFAULT_SQLITE_URL
 
@@ -59,6 +60,7 @@ def test_client(get_session) -> Generator[TestClient, None, None]:
     '''
     Creates a TestClient and overrides get_in() dependency of temporary database
     '''
+    app.dependency_overrides[config.TESTS_RUNNING] = True
     app.dependency_overrides[depends.get_db] = get_session
     client = TestClient(app)
     yield client
