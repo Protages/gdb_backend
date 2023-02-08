@@ -12,7 +12,7 @@ class ObjectDoesNotExistException(Exception):
         self.content = {'detail': self.detail}
 
 
-class IncorrectImageExtension(Exception):
+class IncorrectImageExtensionException(Exception):
     def __init__(self, allowed_extensions: list = ['.png', '.jpg', '.jpeg']) -> None:
         self.allowed_extensions = allowed_extensions
         self.status_code = status.HTTP_400_BAD_REQUEST

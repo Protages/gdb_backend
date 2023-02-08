@@ -7,7 +7,10 @@ from src.api_v1.api import api_v1_router
 from src.db.database import Base, SessionLocal, engine
 from src.db.init_db import init_db
 from src.core.config import settings
-from src.api_v1.exceptions import ObjectDoesNotExistException, IncorrectImageExtension
+from src.api_v1.exceptions import (
+    ObjectDoesNotExistException, 
+    IncorrectImageExtensionException
+)
 
 # Base.metadata.create_all(bind=engine)
 init_db(db=SessionLocal())
@@ -41,8 +44,8 @@ async def object_does_not_exist_exception_handler(
     return JSONResponse(status_code=exc.status_code, content=exc.content)
 
 
-@app.exception_handler(IncorrectImageExtension)
+@app.exception_handler(IncorrectImageExtensionException)
 async def incorrect_image_extension_handler(
-        request: Request, exc: IncorrectImageExtension
+        request: Request, exc: IncorrectImageExtensionException
     ):
     return JSONResponse(status_code=exc.status_code, content=exc.content)
