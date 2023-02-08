@@ -32,6 +32,12 @@ def password_validator(password: str) -> bool:
     return bool(re.fullmatch(password_regex, password))
 
 
+def image_extension_validator(image_name: str) -> bool:
+    '''Image extension should end with .jpeg or .jpg or .png'''
+    extension_regex = '.+\.(jpeg|jpg|png)\Z'
+    return bool(re.fullmatch(extension_regex, image_name))
+
+
 def unique_validator(
         model: Any, obj: Any, field_name: str, db: Session
     ) -> HTTPException | None:
