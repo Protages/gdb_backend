@@ -9,11 +9,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
 from src.schemas.game_schemas import GameCreate, GameUpdate
-from src.api_v1.exceptions import ObjectDoesNotExistException
+from src.api_v1.exceptions import (
+    ObjectDoesNotExistException, 
+    IncorrectImageExtensionException
+)
+from src.api_v1.validators import image_extension_validator
 from src.models import models
 from src.crud import genre_crud, platform_crud
 from src.crud.queries import pagination_query
-from src.core.security import CustomTransaction
+from src.crud.utils import remove_all_old_game_images, remove_old_game_main_image
 
 
 def get_game_by_id(db: Session, game_id: int) -> models.Game:
@@ -105,26 +109,16 @@ def get_game_main_image_path(db: Session, game_id: int) -> str:
     return image_path
 
 
-def remove_all_old_game_images(
-        db: Session, db_game: models.Game, image_path: str
-    ) -> None:
-    db_images: list[models.Image] = db_game.images
-
-    with CustomTransaction(db=db):
-        [db.delete(db_image) for db_image in db_images]
-        db.commit()
-
-        for f in Path(image_path).glob(f'{db_game.img_name_prefix}*'):
-            if f.is_file():
-                f.unlink()
-
-
 def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
     iamge_name = db_game.create_main_image_name(file_name=image.filename)
     image_url = f'{image_path}/{iamge_name}'
 
+    if not image_extension_validator(image_name=iamge_name):
+        raise IncorrectImageExtensionException()
+
+    remove_old_game_main_image(db_game=db_game, image_path=image_path)
     with open(image_url, 'wb') as out_file:
         content = image.file.read()
         out_file.write(content)

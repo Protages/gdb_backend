@@ -86,6 +86,7 @@ game_category = Table(
 
 class Game(Base):
     img_name_prefix = 'img_'
+    main_img_name_prefix = 'main_image'
     default_main_image_url = 'src/static/img/games/default.png'
 
     id = Column(Integer, primary_key=True, index=True)
@@ -117,7 +118,7 @@ class Game(Base):
 
     def create_main_image_name(self, file_name: str) -> str:
         file_extension = file_name.split('.')[-1]
-        return f'main_image.{file_extension}'
+        return f'{self.main_img_name_prefix}.{file_extension}'
 
     def __str__(self) -> str:
         return self.title
