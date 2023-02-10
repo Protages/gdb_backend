@@ -90,7 +90,6 @@ class Game(Base):
     img_name_prefix = 'img_'
     main_img_name_prefix = 'main_image'
     default_main_image_url = os.path.join(get_static_url(), 'img', 'games', 'default.png')
-    # default_main_image_url = f'{get_static_url()}/img/games/default.png'
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
@@ -115,9 +114,7 @@ class Game(Base):
 
     def create_image_path(self) -> str:
         prefix = os.path.join(get_static_url(), 'img', 'games')
-        # prefix = f'{get_static_url()}/img/games'
         path = os.path.join(prefix, str(self.id))
-        # path = f'{prefix}/{self.id}'
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
 
