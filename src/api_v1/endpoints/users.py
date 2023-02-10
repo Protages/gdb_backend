@@ -81,17 +81,16 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         'token': {'access_token': access_token, 'token_type': settings.TOKEN_TYPE}
     }
 
-    if not settings.TESTS_RUNNING:
-        verification_url = f'http://127.0.0.1:8000/api/v1/user/verification_email/{verification_code}'
-        try:
-            send_email_confirm_notification.delay(
-                db_user.email, db_user.username, verification_url
-            )
-        except:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                detail='Celery is not working'
-            )
+    verification_url = f'http://127.0.0.1:8000/api/v1/user/verification_email/{verification_code}'
+    try:
+        send_email_confirm_notification.delay(
+            db_user.email, db_user.username, verification_url
+        )
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail='Celery is not working'
+        )
 
     return response
 

@@ -60,7 +60,6 @@ def test_client(get_session) -> Generator[TestClient, None, None]:
     '''
     Creates a TestClient and overrides get_in() dependency of temporary database
     '''
-    app.dependency_overrides[config.TESTS_RUNNING] = True
     app.dependency_overrides[depends.get_db] = get_session
     client = TestClient(app)
     yield client
