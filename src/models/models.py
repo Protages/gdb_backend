@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from sqlalchemy import (
@@ -14,6 +15,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 
 from src.db.database import Base
+from src.models.utils import get_static_url
 
 
 # class Token(Base):
@@ -87,7 +89,8 @@ game_category = Table(
 class Game(Base):
     img_name_prefix = 'img_'
     main_img_name_prefix = 'main_image'
-    default_main_image_url = 'src/static/img/games/default.png'
+    default_main_image_url = os.path.join(get_static_url(), 'img', 'games', 'default.png')
+    # default_main_image_url = f'{get_static_url()}/img/games/default.png'
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
@@ -111,8 +114,10 @@ class Game(Base):
     )
 
     def create_image_path(self) -> str:
-        prefix = 'src/static/img/games'
-        path = f'{prefix}/{self.id}'
+        prefix = os.path.join(get_static_url(), 'img', 'games')
+        # prefix = f'{get_static_url()}/img/games'
+        path = os.path.join(prefix, str(self.id))
+        # path = f'{prefix}/{self.id}'
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
 

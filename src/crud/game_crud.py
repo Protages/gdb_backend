@@ -1,3 +1,4 @@
+import os
 import base64
 import datetime
 from pathlib import Path
@@ -113,7 +114,7 @@ def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
     iamge_name = db_game.create_main_image_name(file_name=image.filename)
-    image_url = f'{image_path}/{iamge_name}'
+    image_url = os.path.join(image_path, iamge_name)
 
     if not image_extension_validator(image_name=iamge_name):
         raise IncorrectImageExtensionException()
@@ -164,7 +165,7 @@ def upload_game_images(
             img_name_prefix=db_game.img_name_prefix,
             file_name=images[indx].filename
         )
-        image_url = f'{image_path}/{iamge_name}'
+        image_url = os.path.join(image_path, iamge_name)
 
         with open(image_url, 'wb') as out_file:
             content = images[indx].file.read()

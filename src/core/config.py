@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 
 from pydantic import BaseSettings, EmailStr, HttpUrl
@@ -25,6 +26,9 @@ class Settings(BaseSettings):
     EMAIL_API_KEY: str
     EMAIL_FROM: EmailStr = 'game.database@play.com'
     EMAIL_NAME: str = 'Game DataBase'
+
+    # Static path
+    STATIC_URL: str = os.path.join('src', 'static')
 
     class Config:
         env_file = '.env.dev'
