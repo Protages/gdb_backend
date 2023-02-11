@@ -1,4 +1,8 @@
+import os
 import pytest
+import tempfile
+import shutil
+from pathlib import Path
 from typing import Generator, Any
 
 from fastapi.testclient import TestClient
@@ -10,7 +14,11 @@ from src.main import app
 from src.db.database import Base
 from src.core import config
 from src.api_v1 import depends
-from tests.utils import tmp_database, DEFAULT_SQLITE_URL
+from tests.utils import (
+    tmp_database, 
+    check_dir_contain_files_with_extensions, 
+    DEFAULT_SQLITE_URL
+)
 
 
 @pytest.fixture(scope='session')
@@ -31,7 +39,7 @@ def sqlite_engine(sqlite: Generator[str, None, None]) -> Generator[Engine, None,
 
 
 def create_all_db_models(engine) -> None:
-    '''Creates all linked models'''
+    '''Creates all linked tables'''
     Base.metadata.create_all(bind=engine)
 
 
@@ -42,6 +50,28 @@ def create_sessionmaker(
     create_all_db_models(sqlite_engine)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sqlite_engine)
     yield SessionLocal
+
+
+# @pytest.fixture(scope='session')
+# def create_tmp_static_path(tmp_path_factory: pytest.TempPathFactory):
+#     static_url = os.environ.get('STATIC_URL', os.path.join('src', 'static_test'))
+#     path = tempfile.TemporaryDirectory()
+#     try:
+#         yield path
+#     finally:
+#         path.cleanup()
+
+
+@pytest.fixture(scope='session')
+def create_tmp_static_path():
+    static_url = os.environ.get('STATIC_URL', os.path.join('src', 'static_test'))
+    path = Path(static_url)
+    path.mkdir(exist_ok=True)
+
+    yield static_url
+    
+    check_dir_contain_files_with_extensions(path=path)
+    shutil.rmtree(path)
 
 
 @pytest.fixture(scope='function')
@@ -56,7 +86,7 @@ def get_session(create_sessionmaker: Generator[sessionmaker, None, None]):
 
 
 @pytest.fixture(scope='function')
-def test_client(get_session) -> Generator[TestClient, None, None]:
+def test_client(get_session, create_tmp_static_path) -> Generator[TestClient, None, None]:
     '''
     Creates a TestClient and overrides get_in() dependency of temporary database
     '''

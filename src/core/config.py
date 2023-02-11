@@ -12,18 +12,18 @@ class Settings(BaseSettings):
     ALLOW_CREDENTIALS: bool = True
 
     # Authenfication
-    SECRET_KEY: str
+    SECRET_KEY: str = ''
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     TOKEN_TYPE: str = 'baerer'
 
     # Celery config
-    BROKER_URL: str
-    RESULT_BACKEND_URL: str
+    BROKER_URL: str = ''
+    RESULT_BACKEND_URL: str = ''
 
     # Service email
     EMAIL_URL: HttpUrl = 'https://api.sendinblue.com/v3/smtp/email'
-    EMAIL_API_KEY: str
+    EMAIL_API_KEY: str = ''
     EMAIL_FROM: EmailStr = 'game.database@play.com'
     EMAIL_NAME: str = 'Game DataBase'
 
@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     STATIC_URL: str = os.path.join('src', 'static')
 
     class Config:
-        env_file = '.env.dev'
+        env_file = os.environ.get('ENV_FILE', '.env.dev')
 
 
 @lru_cache

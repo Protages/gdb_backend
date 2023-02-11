@@ -64,6 +64,21 @@ def tmp_database(db_url, suffix: str = '', **kwargs):
         drop_database(tmp_db_url)
 
 
+def check_dir_contain_files_with_extensions(path: str, extentions: tuple = ('.py',)):
+    '''
+    If directory or its subdirectories contain
+    a file with specific extensions (.py), an error will be caused
+    '''
+    for file_name in os.listdir(path):
+        file_path = os.path.join(path, file_name)
+
+        if os.path.isdir(file_path):
+            check_dir_contain_files_with_extensions(file_path)
+            
+        if file_name.endswith(extentions):
+            raise Exception(f'Static test directory contains {file_name} file')
+
+
 # Represents test for 'data' migration.
 # Contains revision to be tested, it's previous revision, and callbacks that
 # could be used to perform validation.
