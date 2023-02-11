@@ -73,7 +73,7 @@ def check_dir_contain_files_with_extensions(path: str, extentions: tuple = ('.py
         file_path = os.path.join(path, file_name)
 
         if os.path.isdir(file_path):
-            check_dir_contain_files_with_extensions(file_path)
+            check_dir_contain_files_with_extensions(file_path, extentions)
             
         if file_name.endswith(extentions):
             raise Exception(f'Static test directory contains {file_name} file')

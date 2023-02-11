@@ -52,24 +52,15 @@ def create_sessionmaker(
     yield SessionLocal
 
 
-# @pytest.fixture(scope='session')
-# def create_tmp_static_path(tmp_path_factory: pytest.TempPathFactory):
-#     static_url = os.environ.get('STATIC_URL', os.path.join('src', 'static_test'))
-#     path = tempfile.TemporaryDirectory()
-#     try:
-#         yield path
-#     finally:
-#         path.cleanup()
-
-
 @pytest.fixture(scope='session')
 def create_tmp_static_path():
+    '''Create temp static dir, and after deleting it'''
     static_url = os.environ.get('STATIC_URL', os.path.join('src', 'static_test'))
     path = Path(static_url)
     path.mkdir(exist_ok=True)
 
     yield static_url
-    
+
     check_dir_contain_files_with_extensions(path=path)
     shutil.rmtree(path)
 
