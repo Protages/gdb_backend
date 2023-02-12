@@ -111,15 +111,16 @@ def get_game_main_image_path(db: Session, game_id: int) -> str:
 
 
 def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
+    if not image_extension_validator(image_name=image.filename):
+        raise IncorrectImageExtensionException()
+    
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
     iamge_name = db_game.create_main_image_name(file_name=image.filename)
     image_url = os.path.join(image_path, iamge_name)
 
-    if not image_extension_validator(image_name=iamge_name):
-        raise IncorrectImageExtensionException()
-
     remove_old_game_main_image(db_game=db_game, image_path=image_path)
+
     with open(image_url, 'wb') as out_file:
         content = image.file.read()
         out_file.write(content)
@@ -151,6 +152,10 @@ def get_game_images_base64(db: Session, game_id: int) -> list[bytes]:
 def upload_game_images(
         db: Session, game_id: int, images: list[UploadFile], patch: bool = False
     ):
+    for image in images:
+        if not image_extension_validator(image_name=image.filename):
+            raise IncorrectImageExtensionException()
+
     db_game = get_game_by_id(db=db, game_id=game_id)
     game_images_len = len(db_game.images) if patch else 0
     image_path = db_game.create_image_path()
@@ -158,17 +163,17 @@ def upload_game_images(
     if not patch:
         remove_all_old_game_images(db=db, db_game=db_game, image_path=image_path)
 
-    for indx in range(len(images)):
+    for i, image in enumerate(images):
         db_image = models.Image(game_id=db_game.id)
         iamge_name = db_image.create_image_name(
-            indx=indx + game_images_len, 
+            indx=i + game_images_len, 
             img_name_prefix=db_game.img_name_prefix,
-            file_name=images[indx].filename
+            file_name=image.filename
         )
         image_url = os.path.join(image_path, iamge_name)
 
         with open(image_url, 'wb') as out_file:
-            content = images[indx].file.read()
+            content = image.file.read()
             out_file.write(content)
         
         db_image.image_path = image_url
