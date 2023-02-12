@@ -93,6 +93,20 @@ def test_read_all_role_invalid_pagination(
     assert response.json() == response_data
 
 
+def test_update_role_unused_field(test_client: TestClient):
+    request_data = {
+        'bar': 'baz'  # We can send any key-value, it's ok
+    }
+    response_data = {
+        'id': 1,
+        'title': 'Role 1'
+    }
+    response = test_client.put(f'/api/v1/role/{1}', json=request_data)
+    print('-----', response.json())
+    assert response.status_code == 200
+    assert response.json() == response_data
+
+
 def test_update_role(test_client: TestClient):
     request_data = {
         'title': 'Role 1 update'
@@ -117,20 +131,6 @@ def test_update_role_invalid_id(test_client: TestClient):
     response = test_client.put(f'/api/v1/role/{999}', json=request_data)
     print('-----', response.json())
     assert response.status_code == 400
-    assert response.json() == response_data
-
-
-def test_update_role_invalid_data(test_client: TestClient):
-    request_data = {
-        'bar': 'baz'  # We can send any key-value, it's ok
-    }
-    response_data = {
-        'id': 1,
-        'title': 'Role 1 update'
-    }
-    response = test_client.put(f'/api/v1/role/{1}', json=request_data)
-    print('-----', response.json())
-    assert response.status_code == 200
     assert response.json() == response_data
 
 
