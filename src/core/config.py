@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     # Static path
     STATIC_URL: str = os.path.join('src', 'static')
 
+    # Tests
+    TEST_RUNNING: bool = False
+
     class Config:
         env_file = os.environ.get('ENV_FILE', '.env.dev')
 
