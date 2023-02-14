@@ -15,16 +15,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Reviews'])
+router = APIRouter(prefix='/review', tags=['Reviews'])
 
 
-@router.get('/review/{review_id}', response_model=Review)
+@router.get('/{review_id}', response_model=Review)
 async def read_review_by_id(review_id: int, db: Session = Depends(get_db)):
     db_review = review_crud.get_review_by_id(db=db, review_id=review_id)
     return db_review
 
 
-@router.get('/review/all/', response_model=list[Review])
+@router.get('/', response_model=list[Review])
 async def read_all_review(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -34,13 +34,13 @@ async def read_all_review(
     return db_reviews
 
 
-@router.post('/review', response_model=Review, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Review, status_code=status.HTTP_201_CREATED)
 async def create_review(review: ReviewCreate, db: Session = Depends(get_db)):
     db_review = review_crud.create_review(db=db, review=review)
     return db_review
 
 
-@router.put('/review/{review_id}', response_model=Review)
+@router.put('/{review_id}', response_model=Review)
 async def update_review(
         review_id: int, review: ReviewUpdate, db: Session = Depends(get_db)
     ):
@@ -48,7 +48,7 @@ async def update_review(
     return db_review
 
 
-@router.delete('/review/{review_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{review_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_review(review_id: int, db: Session = Depends(get_db)):
     response = review_crud.delete_review(db=db, review_id=review_id)
     return response

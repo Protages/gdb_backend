@@ -14,16 +14,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Roles'])
+router = APIRouter(prefix='/role', tags=['Roles'])
 
 
-@router.get('/role/{role_id}', response_model=Role)
+@router.get('/{role_id}', response_model=Role)
 async def read_role(role_id: int, db: Session = Depends(get_db)):
     role = role_crud.get_role_by_id(db=db, role_id=role_id)
     return role
 
 
-@router.get('/role/all/', response_model=list[Role])
+@router.get('/', response_model=list[Role])
 async def read_all_roles(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -31,19 +31,19 @@ async def read_all_roles(
     return db_roles
 
 
-@router.post('/role', response_model=Role, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Role, status_code=status.HTTP_201_CREATED)
 async def create_role(role: RoleCreate, db: Session = Depends(get_db)):
     role = role_crud.create_role(db=db, role=role)
     return role
 
 
-@router.put('/role/{role_id}', response_model=Role)
+@router.put('/{role_id}', response_model=Role)
 async def update_role(role_id: int, role: RoleUpdate, db: Session = Depends(get_db)):
     role = role_crud.update_role(db=db, role_id=role_id, role=role)
     return role
 
 
-@router.delete('/role/{role_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{role_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_role(role_id: int, db: Session = Depends(get_db)):
     response = role_crud.delete_role(db=db, role_id=role_id)
     return response

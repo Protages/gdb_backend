@@ -15,16 +15,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Comments'])
+router = APIRouter(prefix='/comment', tags=['Comments'])
 
 
-@router.get('/comment/{comment_id}', response_model=Comment)
+@router.get('/{comment_id}', response_model=Comment)
 async def read_comment_by_id(comment_id: int, db: Session = Depends(get_db)):
     comment = comment_crud.get_comment_by_id(db=db, comment_id=comment_id)
     return comment
 
 
-@router.get('/comment/all/', response_model=list[Comment])
+@router.get('/', response_model=list[Comment])
 async def read_all_comments(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -34,13 +34,13 @@ async def read_all_comments(
     return db_comments
 
 
-@router.post('/comment', response_model=Comment, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Comment, status_code=status.HTTP_201_CREATED)
 async def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
     comment = comment_crud.create_comment(db=db, comment=comment)
     return comment
 
 
-@router.put('/comment/{comment_id}', response_model=Comment)
+@router.put('/{comment_id}', response_model=Comment)
 async def update_comment(
         comment_id: int, comment: CommentUpdate, db: Session = Depends(get_db)
     ):
@@ -48,7 +48,7 @@ async def update_comment(
     return comment
 
 
-@router.delete('/comment/{comment_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{comment_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_comment(comment_id: int, db: Session = Depends(get_db)):
     response = comment_crud.delete_comment(db=db, comment_id=comment_id)
     return response

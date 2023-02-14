@@ -15,16 +15,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Platforms'])
+router = APIRouter(prefix='/platform', tags=['Platforms'])
 
 
-@router.get('/platform/{platform_id}', response_model=Platform)
+@router.get('/{platform_id}', response_model=Platform)
 async def read_platform_by_id(platform_id: int, db: Session = Depends(get_db)):
     db_platform = platform_crud.get_platform_by_id(db=db, platform_id=platform_id)
     return db_platform
 
 
-@router.get('/platform/all/', response_model=list[Platform])
+@router.get('/', response_model=list[Platform])
 async def read_all_platform(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -34,13 +34,13 @@ async def read_all_platform(
     return db_platforms
 
 
-@router.post('/platform', response_model=Platform, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Platform, status_code=status.HTTP_201_CREATED)
 async def create_platform(platform: PlatformCreate, db: Session = Depends(get_db)):
     db_platform = platform_crud.create_platform(db=db, platform=platform)
     return db_platform
 
 
-@router.put('/platform/{platform_id}', response_model=Platform)
+@router.put('/{platform_id}', response_model=Platform)
 async def update_platform(
         platform_id: int, platform: PlatformUpdate, db: Session = Depends(get_db)
     ):
@@ -50,7 +50,7 @@ async def update_platform(
     return db_platform
 
 
-@router.delete('/platform/{platform_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{platform_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_platform(platform_id: int, db: Session = Depends(get_db)):
     response = platform_crud.delete_platform(db=db, platform_id=platform_id)
     return response

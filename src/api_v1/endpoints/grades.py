@@ -15,16 +15,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Grades'])
+router = APIRouter(prefix='/grade', tags=['Grades'])
 
 
-@router.get('/grade/{grade_id}', response_model=Grade)
+@router.get('/{grade_id}', response_model=Grade)
 async def read_grade_by_id(grade_id: int, db: Session = Depends(get_db)):
     db_grade = grade_crud.get_grade_by_id(db=db, grade_id=grade_id)
     return db_grade
 
 
-@router.get('/grade/all/', response_model=list[Grade])
+@router.get('/', response_model=list[Grade])
 async def read_all_grades(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -34,19 +34,19 @@ async def read_all_grades(
     return db_grades
 
 
-@router.post('/grade', response_model=Grade, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Grade, status_code=status.HTTP_201_CREATED)
 async def create_grade(grade: GradeCreate, db: Session = Depends(get_db)):
     db_grade = grade_crud.create_grade(db=db, grade=grade)
     return db_grade
 
 
-@router.put('/grade/{grade_id}', response_model=Grade)
+@router.put('/{grade_id}', response_model=Grade)
 async def update_grade(grade_id: int, grade: GradeUpdate, db: Session = Depends(get_db)):
     db_grade = grade_crud.update_grade(db=db, grade_id=grade_id, grade=grade)
     return db_grade
 
 
-@router.delete('/grade/{grade_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{grade_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_grade(grade_id: int, db: Session = Depends(get_db)):
     response = grade_crud.delete_grade(db=db, grade_id=grade_id)
     return response

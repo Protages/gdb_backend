@@ -14,10 +14,10 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Users'])
+router = APIRouter(prefix='/user', tags=['Users'])
 
 
-@router.get('/user/me', response_model=User)
+@router.get('/me', response_model=User)
 async def read_current_user(
         token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
     ):
@@ -31,13 +31,13 @@ async def read_current_user(
     return db_user
 
 
-@router.get('/user/{user_id}', response_model=User)
+@router.get('/{user_id}', response_model=User)
 async def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_id(db, user_id)
     return db_user
 
 
-@router.get('/user/all/', response_model=list[User])
+@router.get('/', response_model=list[User])
 async def read_all_users(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -45,7 +45,7 @@ async def read_all_users(
     return db_users
 
 
-@router.get('/user/verification_email/{verification_code}')
+@router.get('/verification_email/{verification_code}')
 async def verification_email(verification_code: str, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_verification_code(
         db=db, verification_code=verification_code
@@ -59,7 +59,7 @@ async def verification_email(verification_code: str, db: Session = Depends(get_d
 
 
 @router.post(
-    '/user', 
+    '/', 
     response_model=UserAndToken, 
     status_code=status.HTTP_201_CREATED, 
     description='''
@@ -96,13 +96,13 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return response
 
 
-@router.put('/user/{user_id}', response_model=User)
+@router.put('/{user_id}', response_model=User)
 async def update_user(user_id, update_user: UserUpdate, db: Session = Depends(get_db)):
     db_user = user_crud.update_user(db=db, user_id=user_id, update_user=update_user)
     return db_user
 
 
-@router.delete('/user/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: int, db: Session = Depends(get_db)):
     response = user_crud.delete_user(db=db, user_id=user_id)
     return response

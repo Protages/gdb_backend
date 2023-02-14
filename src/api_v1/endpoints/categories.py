@@ -20,16 +20,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Categories'])
+router = APIRouter(prefix='/category', tags=['Categories'])
 
 
-@router.get('/category/{category_id}', response_model=Category)
+@router.get('/{category_id}', response_model=Category)
 async def read_category_by_id(category_id: int, db: Session = Depends(get_db)):
     db_category = category_crud.get_category_by_id(db=db, category_id=category_id)
     return db_category
 
 
-@router.get('/category/all/', response_model=list[Category])
+@router.get('/', response_model=list[Category])
 async def read_all_categories(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -39,7 +39,7 @@ async def read_all_categories(
     return db_categories
 
 
-@router.get('/category/all/{user_id}', response_model=list[Category])
+@router.get('/{user_id}', response_model=list[Category])
 async def read_all_categories_by_user_id(
         user_id: int, paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -49,13 +49,13 @@ async def read_all_categories_by_user_id(
     return db_categories
 
 
-@router.post('/category', response_model=Category, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Category, status_code=status.HTTP_201_CREATED)
 async def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
     db_category = category_crud.create_category(db=db, category=category)
     return db_category
 
 
-@router.put('/category/{category_id}', response_model=Category)
+@router.put('/{category_id}', response_model=Category)
 async def update_category(
         category_id: int, category: CategoryUpdate, db: Session = Depends(get_db)
     ):
@@ -65,13 +65,13 @@ async def update_category(
     return db_category
 
 
-@router.delete('/category/{category_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{category_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(category_id: int, db: Session = Depends(get_db)):
     response = category_crud.delete_category(db=db, category_id=category_id)
     return response
 
 
-@router.put('/category/{category_id}/games', response_model=Category)
+@router.put('/{category_id}/games', response_model=Category)
 async def add_game_to_category(
         category_id: int, game: CategoryUpdateGame, db: Session = Depends(get_db)
     ):
@@ -81,7 +81,7 @@ async def add_game_to_category(
     return db_category
 
 
-@router.delete('/category/{category_id}/games', response_model=Category)
+@router.delete('/{category_id}/games', response_model=Category)
 async def remove_game_from_category(
         category_id: int, game: CategoryUpdateGame, db: Session = Depends(get_db)
     ):

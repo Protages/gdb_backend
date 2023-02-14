@@ -17,16 +17,16 @@ from src.core.security import (
     create_access_token
 )
 
-router = APIRouter(tags=['Games'])
+router = APIRouter(prefix='/game', tags=['Games'])
 
 
-@router.get('/game/{game_id}', response_model=Game)
+@router.get('/{game_id}', response_model=Game)
 async def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
     db_game = game_crud.get_game_by_id(db=db, game_id=game_id)
     return db_game
 
 
-@router.get('/game/all/', response_model=list[Game])
+@router.get('/', response_model=list[Game])
 async def read_all_games(
         paginator: Pagination = Depends(), db: Session = Depends(get_db)
     ):
@@ -34,26 +34,26 @@ async def read_all_games(
     return db_games
 
 
-@router.post('/game', response_model=Game, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=Game, status_code=status.HTTP_201_CREATED)
 async def create_game(game: GameCreate, db: Session = Depends(get_db)):
     db_game = game_crud.create_game(db=db, game=game)
     return db_game
 
 
-@router.put('/game/{game_id}', response_model=Game)
+@router.put('/{game_id}', response_model=Game)
 async def update_game(game_id: int, game: GameUpdate, db: Session = Depends(get_db)):
     db_game = game_crud.update_game(db=db, game_id=game_id, game=game)
     return db_game
 
 
-@router.delete('/game/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{game_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_game(game_id: int, db: Session = Depends(get_db)):
     response = game_crud.delete_game(db=db, game_id=game_id)
     return response
 
 
 @router.get(
-    '/game/{game_id}/main_img', 
+    '/{game_id}/main_img', 
     response_class=FileResponse, 
     responses={
         200: {
@@ -66,7 +66,7 @@ async def get_game_main_image(game_id: int, db: Session = Depends(get_db)):
     return FileResponse(img_path, media_type="image/png")
 
 
-@router.post('/game/{game_id}/main_img', status_code=status.HTTP_204_NO_CONTENT)
+@router.post('/{game_id}/main_img', status_code=status.HTTP_204_NO_CONTENT)
 async def upload_game_main_image(
         game_id: int, image: UploadFile, db: Session = Depends(get_db)
     ):
@@ -75,7 +75,7 @@ async def upload_game_main_image(
 
 
 @router.get(
-    '/game/{game_id}/images', 
+    '/{game_id}/images', 
     response_model=list[bytes], 
     response_description="Returns an array of images in base64 format"
 )
@@ -85,7 +85,7 @@ async def get_game_images_in_base64(game_id: int, db: Session = Depends(get_db))
 
 
 @router.post(
-    '/game/{game_id}/images', 
+    '/{game_id}/images', 
     status_code=status.HTTP_204_NO_CONTENT, 
     description='Remove all old game images(!), and upload new images'
 )
@@ -97,7 +97,7 @@ async def upload_game_images(
 
 
 @router.patch(
-    '/game/{game_id}/images', 
+    '/{game_id}/images', 
     status_code=status.HTTP_204_NO_CONTENT, 
     description='Add new images to game, keeps old images'
 )
