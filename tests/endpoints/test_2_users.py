@@ -123,7 +123,7 @@ def test_read_all_user_invalid_pagination(
 def test_update_user(test_client: TestClient):
     request_data = user_data.update_user_valid_data
     response_data = user_data.update_user_valid_data_response
-    response = test_client.put(f'/api/v1/user/{1}', json=request_data)
+    response = test_client.put(f'/api/v1/user/{5}', json=request_data)
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data

@@ -96,6 +96,53 @@ user_valid_data_response = [
     },
 ]
 
+user_nested_response = [
+    {
+        'id': 1,
+        'email': 'user.1@gmail.com',
+        'username': 'User_1',
+        'about': 'About user 1',
+        'rating': 1,
+        'is_active': False,
+        'is_superuser': True,
+        'is_email_confirmed': False,
+        'roles': []
+    },
+    {
+        'id': 2,
+        'email': 'user.2@gmail.com',
+        'username': 'User_2',
+        'about': '',
+        'rating': 0,
+        'is_active': True,
+        'is_superuser': False,
+        'is_email_confirmed': False,    
+        'roles': []
+    },
+    {
+        'id': 3,
+        'email': 'user.3@gmail.com',
+        'username': 'User_3',
+        'about': '',
+        'rating': 0,
+        'is_active': True,
+        'is_superuser': False,
+        'is_email_confirmed': False,    
+        'roles': []
+    },
+    {
+        'id': 4,
+        'email': 'user.4@gmail.com',
+        'username': 'User_4',
+        'about': '',
+        'rating': 0,
+        'is_active': True,
+        'is_superuser': False,
+        'is_email_confirmed': False,    
+        'roles': []
+    }
+]
+
 create_user_invalid_email_data = [
     {
         'email': '@gmail.com',  # invalid
@@ -206,21 +253,21 @@ user_invalid_password_response = {
 update_user_valid_data = {
     'about': 'New about',
     'rating': 11,
-    'is_active': True,
-    'is_superuser': False,
+    'is_active': False,
+    'is_superuser': True,
     'password': 'user1newpass',
     'roles': []
 }
 
 update_user_valid_data_response = {
-    'id': 1,
-    'username': 'User_1',
-    'email': 'user.1@gmail.com',
+    'id': 5,
+    'email': 'user.5@gmail.com',
+    'username': 'User_5',
     'about': 'New about',
     'rating': 11,
-    'is_active': True,
-    'is_superuser': False,
-    'is_email_confirmed': False,
+    'is_active': False,
+    'is_superuser': True,
+    'is_email_confirmed': False,    
     'roles': []
 }
 

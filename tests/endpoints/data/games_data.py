@@ -117,6 +117,57 @@ game_valid_data_response = [
     }
 ]
 
+game_nested_response = [
+    {
+        'id': 1,
+        'title': 'Game 1', 
+        'description': 'Description game 1', 
+        'release': '2015-01-08', 
+        'developer': 'Developer 1', 
+        'production': 'Production 1', 
+        'system_requirements': 'Requirements 1', 
+        'time_to_play': 10, 
+        'genres': [], 
+        'platforms': [], 
+    },
+    {
+        'id': 2,
+        'title': 'Game 2', 
+        'description': None, 
+        'release': '2015-02-08', 
+        'developer': None, 
+        'production': None, 
+        'system_requirements': None, 
+        'time_to_play': 0, 
+        'genres': [], 
+        'platforms': [], 
+    },
+    {
+        'id': 3,
+        'title': 'Game 3', 
+        'description': None, 
+        'release': '2015-03-08', 
+        'developer': None, 
+        'production': None, 
+        'system_requirements': None, 
+        'time_to_play': 0, 
+        'genres': [], 
+        'platforms': [], 
+    },
+    {
+        'id': 4,
+        'title': 'Game 4', 
+        'description': None, 
+        'release': '2015-04-08', 
+        'developer': None, 
+        'production': None, 
+        'system_requirements': None, 
+        'time_to_play': 0, 
+        'genres': [], 
+        'platforms': [], 
+    }
+]
+
 create_game_invalid_required_data = {'bar': 'baz'}
 
 create_game_invalid_required_data_response = {
