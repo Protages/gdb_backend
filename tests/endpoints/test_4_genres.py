@@ -1,27 +1,17 @@
-# After all these tests, we have genres with id: 2
+# After all these tests, we have genres with id: 1, 2, 3, 4
 
 import pytest
 
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
+
+from tests.endpoints.data import genres_data
 
 
 @pytest.mark.parametrize(
     'request_data, response_data',
-    [
-        ({
-            'title': 'Genre 1'
-        }, {
-            'id': 1,
-            'title': 'Genre 1'
-        }),
-        ({
-            'title': 'Genre 2'
-        }, {
-            'id': 2,
-            'title': 'Genre 2'
-        }),
-    ]
+    [(a, b) for a, b in zip(
+        genres_data.create_genre_valid_data, genres_data.genre_valid_data_response
+    )]
 )
 def test_create_genre(test_client: TestClient, request_data, response_data):
     response = test_client.post('/api/v1/genre', json=request_data)
@@ -31,18 +21,8 @@ def test_create_genre(test_client: TestClient, request_data, response_data):
 
 
 def test_create_genre_invalid_data(test_client: TestClient):
-    request_data = {
-        'bar': 'baz'
-    }
-    response_data = {
-        'detail': [
-            {
-                'loc': ['body', 'title'], 
-                'msg': 'field required', 
-                'type': 'value_error.missing'
-            }
-        ]
-    }
+    request_data = genres_data.create_genre_invalid_data
+    response_data = genres_data.create_genre_invalid_data_response
     response = test_client.post('/api/v1/genre', json=request_data)
     print('-----', response.json())
     assert response.status_code == 422
@@ -50,10 +30,7 @@ def test_create_genre_invalid_data(test_client: TestClient):
 
 
 def test_read_genre(test_client: TestClient):
-    response_data = {
-        'id': 1,
-        'title': 'Genre 1'
-    }
+    response_data = genres_data.genre_valid_data_response[0]
     response = test_client.get(f'/api/v1/genre/{1}')
     print('-----', response.json())
     assert response.status_code == 200
@@ -61,9 +38,7 @@ def test_read_genre(test_client: TestClient):
 
 
 def test_read_genre_invalid_id(test_client: TestClient):
-    response_data = {
-        'detail': 'Genre does not exist'
-    }
+    response_data = genres_data.genre_invalid_id_response
     response = test_client.get(f'/api/v1/genre/{999}')
     print('-----', response.json())
     assert response.status_code == 400
@@ -71,17 +46,8 @@ def test_read_genre_invalid_id(test_client: TestClient):
 
 
 def test_read_all_genre(test_client: TestClient):
-    response_data = [
-        {
-            'id': 1,
-            'title': 'Genre 1'
-        },
-        {
-            'id': 2,
-            'title': 'Genre 2'
-        }
-    ]
-    response = test_client.get(f'/api/v1/genre/all/')
+    response_data = genres_data.genre_valid_data_response
+    response = test_client.get(f'/api/v1/genre/')
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data
@@ -97,33 +63,24 @@ def test_read_all_genre(test_client: TestClient):
 def test_read_all_genre_invalid_pagination(
         test_client: TestClient, size, page, response_data
     ):
-    response = test_client.get(f'/api/v1/genre/all/?size={size}&page={page}')
+    response = test_client.get(f'/api/v1/genre/?size={size}&page={page}')
     print('-----', response.json())
     assert response.status_code == 400
     assert response.json() == response_data
 
 
 def test_update_genre(test_client: TestClient):
-    request_data = {
-        'title': 'Genre 1 update'
-    }
-    response_data = {
-        'id': 1,
-        'title': 'Genre 1 update'
-    }
-    response = test_client.put(f'/api/v1/genre/{1}', json=request_data)
+    request_data = genres_data.update_genre_valid_data
+    response_data = genres_data.update_genre_valid_data_response
+    response = test_client.put(f'/api/v1/genre/{5}', json=request_data)
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data
 
 
 def test_update_genre_invalid_id(test_client: TestClient):
-    request_data = {
-        'title': 'Genre 1 update'
-    }
-    response_data = {
-        'detail': 'Genre does not exist'
-    }
+    request_data = genres_data.update_genre_valid_data
+    response_data = genres_data.genre_invalid_id_response
     response = test_client.put(f'/api/v1/genre/{999}', json=request_data)
     print('-----', response.json())
     assert response.status_code == 400
@@ -131,18 +88,8 @@ def test_update_genre_invalid_id(test_client: TestClient):
 
 
 def test_update_genre_invalid_data(test_client: TestClient):
-    request_data = {
-        'bar': 'baz'
-    }
-    response_data = {
-        'detail': [
-            {
-                'loc': ['body', 'title'], 
-                'msg': 'field required', 
-                'type': 'value_error.missing'
-            }
-        ]
-    }
+    request_data = genres_data.create_genre_invalid_data
+    response_data = genres_data.create_genre_invalid_data_response
     response = test_client.put(f'/api/v1/genre/{1}', json=request_data)
     print('-----', response.json())
     assert response.status_code == 422
@@ -150,14 +97,16 @@ def test_update_genre_invalid_data(test_client: TestClient):
 
 
 def test_delete_genre(test_client: TestClient):
-    response = test_client.delete(f'/api/v1/genre/{1}')
+    response = test_client.delete(f'/api/v1/genre/{5}')
     assert response.status_code == 204
+
+    response = test_client.get(f'/api/v1/genre/')
+    assert response.status_code == 200
+    assert len(response.json()) == 4
 
 
 def test_delete_genre_invalid_id(test_client: TestClient):
-    response_data = {
-        'detail': 'Genre does not exist'
-    }
+    response_data = genres_data.genre_invalid_id_response
     response = test_client.delete(f'/api/v1/genre/{999}')
     print('-----', response.json())
     assert response.status_code == 400

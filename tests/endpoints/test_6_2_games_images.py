@@ -3,6 +3,8 @@ import base64
 
 from fastapi.testclient import TestClient
 
+from tests.endpoints.data import games_data
+
 
 def test_upload_game_main_image(test_client: TestClient):
     image_path = os.path.join(
@@ -16,7 +18,7 @@ def test_upload_game_main_image(test_client: TestClient):
 
 
 def test_upload_game_main_image_invalid_extention(test_client: TestClient):
-    response_data = {'detail': 'Image must be with the .png or .jpg or .jpeg extension'}
+    response_data = games_data.upload_game_img_invalid_extension
     image_path = os.path.join(
         'tests', 'endpoints', 'static', 'games', 'game_img_invalid.webp'
     )
@@ -41,7 +43,7 @@ def test_read_game_main_image(test_client: TestClient):
 
 
 def test_read_game_main_image_invalid_id(test_client: TestClient):
-    response_data = {'detail': 'Game does not exist'}
+    response_data = games_data.game_invalid_id_response
     response = test_client.get(f'/api/v1/game/{999}/main_img')
     print('-----', response.json())
     assert response.status_code == 400
@@ -73,7 +75,7 @@ def test_upload_game_images(test_client: TestClient):
 
 
 def test_upload_game_images_invalid_extension(test_client: TestClient):
-    response_data = {'detail': 'Image must be with the .png or .jpg or .jpeg extension'}
+    response_data = games_data.upload_game_img_invalid_extension
     image_path = os.path.join(
         'tests', 'endpoints', 'static', 'games', 'game_img_invalid.webp'
     )
