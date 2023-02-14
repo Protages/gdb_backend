@@ -35,7 +35,6 @@ class GameUpdate(GameBase):
 
 class Game(GameBase):
     id: int
-    main_image_path: str
     reviews: list | None = []
     genres: list | None = []
     platforms: list | None = []
