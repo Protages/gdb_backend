@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field, validator
 class GameNested(BaseModel):
     id: int
     title: str | None = None
-    main_image_path: str | None = None
     description: str | None = None
     release: datetime.date | None = None
     developer: str | None = None
@@ -18,12 +17,12 @@ class GameNested(BaseModel):
     platforms: list | None = []
 
     @validator('genres')
-    def genres_validator(cls, v) -> list[int]:
+    def genres_validator(cls, v: list[int]) -> list[int]:
         res = [genre.id for genre in v]
         return res
     
     @validator('platforms')
-    def platform_validator(cls, v) -> list[int]:
+    def platform_validator(cls, v: list[int]) -> list[int]:
         res = [platform.id for platform in v]
         return res
 

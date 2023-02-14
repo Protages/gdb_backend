@@ -23,19 +23,19 @@ class UserCreate(UserBase):
     roles: list[int] | None = Field(default=[], description='Roles id')
 
     @validator('email')
-    def email_valid(cls, v):
+    def email_valid(cls, v: str) -> str:
         if not email_validator(v):
             raise ValueError('Email is not valid')
         return v
 
     @validator('username')
-    def username_valid(cls, v):
+    def username_valid(cls, v: str) -> str:
         if not username_validator(v):
             raise ValueError('Username is not valid')
         return v
 
     @validator('password')
-    def password_valid(cls, v):
+    def password_valid(cls, v: str) -> str:
         if not password_validator(v):
             raise ValueError('Password is not valid')
         return v
@@ -46,7 +46,7 @@ class UserUpdate(UserBase):
     roles: list[int] | None = Field(default=[], description='Roles id')
 
     @validator('password')
-    def password_valid(cls, v):
+    def password_valid(cls, v: str) -> str:
         if not password_validator(v):
             raise ValueError('Password is not valid')
         return v
@@ -71,7 +71,7 @@ class UserNested(UserBase):
     roles: list | None = []
 
     @validator('roles')
-    def roles_validator(cls, v) -> list[int]:
+    def roles_validator(cls, v: list[int]) -> list[int]:
         res = [role.id for role in v]
         return res
 
