@@ -1,10 +1,14 @@
-from fastapi import Response, status
+from fastapi import Response, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
-from src.schemas.category_schemas import CategoryCreate, CategoryUpdate
+from src.schemas.category_schemas import (
+    CategoryCreate, 
+    CategoryUpdate, 
+    CategoryUpdateGame
+)
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.api_v1.validators import unique_together_validator
 from src.crud import user_crud, game_crud
@@ -67,14 +71,16 @@ def update_category(
         db: Session, category_id: int, category: CategoryUpdate
     ) -> models.Category:
     db_category = get_category_by_id(db=db, category_id=category_id)
-    games_id = category.games
-    update_data = jsonable_encoder(category, exclude={'games'}, exclude_unset=True)
 
-    if games_id:
-        db_category.games.clear()
-        for game_id in games_id:
-            game = game_crud.get_game_by_id(db=db, game_id=game_id)
-            db_category.games.append(game)
+    unique_together_validator(
+        model=models.Category, 
+        obj=CategoryCreate(title=category.title, user=db_category.user_id), 
+        first_field_name='title', 
+        second_field_name='user_id',
+        db=db,
+        field_names_with_id=True
+    )
+    update_data = jsonable_encoder(category, exclude_unset=True)
 
     for field in jsonable_encoder(db_category):
         if field in update_data:
@@ -94,10 +100,14 @@ def delete_category(db: Session, category_id: int):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-def add_game_to_category(db: Session, catgory_id: int, game_id: int) -> models.Category:
-    db_category = get_category_by_id(db=db, category_id=catgory_id)
-    game = game_crud.get_game_by_id(db=db, game_id=game_id)
-    db_category.games.append(game)
+def add_games_to_category(
+        db: Session, category_id: int, games: CategoryUpdateGame
+    ) -> models.Category:
+    db_category = get_category_by_id(db=db, category_id=category_id)
+
+    for game_id in games.games:
+        game = game_crud.get_game_by_id(db=db, game_id=game_id)
+        db_category.games.append(game)
 
     db.add(db_category)
     db.commit()
@@ -106,12 +116,31 @@ def add_game_to_category(db: Session, catgory_id: int, game_id: int) -> models.C
     return db_category
 
 
-def remove_game_from_category(
-        db: Session, catgory_id: int, game_id: int
+def remove_games_from_category(
+        db: Session, category_id: int, games: CategoryUpdateGame
     ) -> models.Category:
-    db_category = get_category_by_id(db=db, category_id=catgory_id)
-    game = game_crud.get_game_by_id(db=db, game_id=game_id)
-    db_category.games.remove(game)
+    db_category = get_category_by_id(db=db, category_id=category_id)
+
+    for game_id in games.games:
+        game = game_crud.get_game_by_id(db=db, game_id=game_id)
+        try:
+            db_category.games.remove(game)
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail=f'Game with id {game_id} are not in category'
+            )
+
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+
+    return db_category
+
+
+def remove_all_games_from_category(db: Session, category_id: int) -> models.Category:
+    db_category = get_category_by_id(db=db, category_id=category_id)
+    db_category.games.clear()
 
     db.add(db_category)
     db.commit()
