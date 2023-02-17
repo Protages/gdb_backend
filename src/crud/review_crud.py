@@ -7,6 +7,7 @@ from sqlalchemy.sql import Update
 from src.schemas.review_schemas import ReviewCreate, ReviewUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.crud.queries import pagination_query
+from src.crud import user_crud, game_crud
 from src.models import models
 
 
@@ -23,12 +24,17 @@ def get_all_reviews(db: Session, size: int, page: int) -> list[models.Review]:
 
 
 def create_review(db: Session, review: ReviewCreate) -> models.Review:
+    author = user_crud.get_user_by_id(db=db, user_id=review.author)
+    game = game_crud.get_game_by_id(db=db, game_id=review.game)
     create_data = jsonable_encoder(review, exclude={'author', 'game'})
-    create_data.update({'author_id': review.author, 'game_id': review.game})
     db_review = models.Review(**create_data)
+    db_review.author = author
+    db_review.game = game
+
     db.add(db_review)
     db.commit()
     db.refresh(db_review)
+
     return db_review
 
 
