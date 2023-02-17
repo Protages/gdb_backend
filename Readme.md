@@ -44,5 +44,16 @@ Or run Celery on `Windows`
 celery -A src.core.celery.celery worker --loglevel=INFO --pool=solo
 ```
 
+## Run tests
+Run integration tests
+```properties
+pytest ./tests/endpoints/ --verbosity=2 --order-group-scope=module
+```
+
+Run migration tests
+```properties
+pytest ./tests/migrations/ --verbosity 2
+```
+
 ## About
 You can register and start rating interesting games. If desired, you can write a review of the game. The user can create their own categories and put specific games in them (e.g. the categories 'Passed' or 'Will pass').

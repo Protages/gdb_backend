@@ -44,5 +44,16 @@ celery -A src.core.celery.celery worker --loglevel=INFO
 celery -A src.core.celery.celery worker --loglevel=INFO --pool=solo
 ```
 
+## Тестирование
+Запуск интеграционных тестов
+```properties
+pytest ./tests/endpoints/ --verbosity=2 --order-group-scope=module
+```
+
+Запуск тестов миграций
+```properties
+pytest ./tests/migrations/ --verbosity 2
+```
+
 ## О приложении
 Можно зарегестрироваться и начать ставить оценки интересющим играм. При желании можно написать рецензию на игру. Пользователь может создавать собственные категории и помещать в них конкретные игры (напр. категории 'Прошел' или 'Буду проходить').
