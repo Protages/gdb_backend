@@ -1,11 +1,13 @@
 import os
 import base64
+import pytest
 
 from fastapi.testclient import TestClient
 
 from tests.endpoints.data import games_data
 
 
+@pytest.mark.order(7)
 def test_upload_game_main_image(test_client: TestClient):
     image_path = os.path.join(
         'tests', 'endpoints', 'static', 'games', 'game_main_img_valid.png'

@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from tests.endpoints.data import user_data
 
 
+@pytest.mark.order(2)
 @pytest.mark.parametrize(
     'request_data, response_data',
     [

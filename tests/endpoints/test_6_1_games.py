@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from tests.endpoints.data import games_data, genres_data, platforms_data
 
 
+@pytest.mark.order(6)
 @pytest.mark.parametrize(
     'request_data, response_data',
     [(a, b) for a, b in zip(

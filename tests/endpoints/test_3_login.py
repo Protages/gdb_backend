@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 
+@pytest.mark.order(3)
 def test_login_valid_data(test_client: TestClient):
     request_data = {
         'username': 'User_2',
