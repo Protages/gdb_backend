@@ -1,16 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.user_schemas import User, UserCreate, UserUpdate, UserAndToken
 from src.crud import user_crud
 from src.api_v1.depends import get_db, oauth2_scheme, Pagination
 from src.core.celery.tasks import send_email_confirm_notification
 from src.core.config import settings
 from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
+    authenticate_user_by_token,
     create_access_token
 )
 
@@ -19,8 +16,8 @@ router = APIRouter(prefix='/user', tags=['Users'])
 
 @router.get('/me', response_model=User)
 async def read_current_user(
-        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-    ):
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     db_user = authenticate_user_by_token(db=db, token=token)
     if not db_user:
         raise HTTPException(
@@ -39,8 +36,8 @@ async def read_user_by_id(user_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[User])
 async def read_all_users(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_users = user_crud.get_all_users(db=db, size=paginator.size, page=paginator.page)
     return db_users
 
@@ -54,14 +51,14 @@ async def verification_email(verification_code: str, db: Session = Depends(get_d
         db_user.is_email_confirmed = True
         db.add(db_user)
         db.commit()
-    
+
     return {'Email was successfully verified'}
 
 
 @router.post(
-    '/', 
-    response_model=UserAndToken, 
-    status_code=status.HTTP_201_CREATED, 
+    '/',
+    response_model=UserAndToken,
+    status_code=status.HTTP_201_CREATED,
     description='''
     Valid username must be:
     1. Username is 4-32 characters long
@@ -82,14 +79,15 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     }
 
     if not settings.TEST_RUNNING:
-        verification_url = f'http://127.0.0.1:8000/api/v1/user/verification_email/{verification_code}'
+        verification_url = 'http://127.0.0.1:8000/api/v1/user' + \
+                           f'/verification_email/{verification_code}'
         try:
             send_email_confirm_notification.delay(
                 db_user.email, db_user.username, verification_url
             )
         except:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail='Celery is not working'
             )
 

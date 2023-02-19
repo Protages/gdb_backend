@@ -67,7 +67,7 @@ def test_create_comment_invalid_game_id(test_client: TestClient):
     assert response.json() == response_data
 
 
-def test_create_comment_invalid_game_id(test_client: TestClient):
+def test_create_comment_invalid_review_id(test_client: TestClient):
     request_data = comments_data.create_comment_invalid_review_id
     response_data = reviews_data.review_invalid_id_response
     response = test_client.post('/api/v1/comment', json=request_data)
@@ -94,7 +94,7 @@ def test_read_comment_invalid_id(test_client: TestClient):
 
 def test_read_all_comment(test_client: TestClient):
     response_data = comments_data.comment_valid_data_response
-    response = test_client.get(f'/api/v1/comment/')
+    response = test_client.get('/api/v1/comment/')
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data
@@ -108,8 +108,8 @@ def test_read_all_comment(test_client: TestClient):
     ]
 )
 def test_read_all_comment_invalid_pagination(
-        test_client: TestClient, size, page, response_data
-    ):
+    test_client: TestClient, size, page, response_data
+):
     response = test_client.get(f'/api/v1/comment/?size={size}&page={page}')
     print('-----', response.json())
     assert response.status_code == 400
@@ -147,7 +147,7 @@ def test_delete_comment(test_client: TestClient):
     response = test_client.delete(f'/api/v1/comment/{5}')
     assert response.status_code == 204
 
-    response = test_client.get(f'/api/v1/comment/')
+    response = test_client.get('/api/v1/comment/')
     assert response.status_code == 200
     assert len(response.json()) == 4
 

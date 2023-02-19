@@ -76,13 +76,13 @@ create_comment_invalid_required_data = {
 create_comment_invalid_required_data_response = {
     'detail': [
         {
-            'loc': ['body', 'body'], 
-            'msg': 'field required', 
+            'loc': ['body', 'body'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'user'], 
-            'msg': 'field required', 
+            'loc': ['body', 'user'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]
@@ -98,7 +98,7 @@ create_comment_invalid_required_game_review_1_response = {
 }
 
 create_comment_invalid_required_game_review_2 = {
-    'body': 'Comment 999',  
+    'body': 'Comment 999',
     'user': 1,
     'game': 1,  # required game or review, not together
     'review': 1
@@ -109,19 +109,19 @@ create_comment_invalid_required_game_review_2_response = {
 }
 
 create_comment_invalid_user_id = {
-    'body': 'Comment 999',  
+    'body': 'Comment 999',
     'user': 999,
     'game': 1
 }
 
 create_comment_invalid_game_id = {
-    'body': 'Comment 999',  
+    'body': 'Comment 999',
     'user': 1,
     'game': 999
 }
 
 create_comment_invalid_review_id = {
-    'body': 'Comment 999',  
+    'body': 'Comment 999',
     'user': 1,
     'review': 999
 }
@@ -149,8 +149,8 @@ update_comment_invalid_data = {
 update_comment_invalid_data_response = {
     'detail': [
         {
-            'loc': ['body', 'body'], 
-            'msg': 'field required', 
+            'loc': ['body', 'body'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]

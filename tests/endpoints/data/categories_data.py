@@ -66,13 +66,13 @@ create_category_invalid_required_data = {
 create_category_invalid_required_data_response = {
     'detail': [
         {
-            'loc': ['body', 'title'], 
-            'msg': 'field required', 
+            'loc': ['body', 'title'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'user'], 
-            'msg': 'field required', 
+            'loc': ['body', 'user'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]
@@ -124,8 +124,8 @@ update_category_invalid_required_data = {
 update_category_invalid_required_data_response = {
     'detail': [
         {
-            'loc': ['body', 'title'], 
-            'msg': 'field required', 
+            'loc': ['body', 'title'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]

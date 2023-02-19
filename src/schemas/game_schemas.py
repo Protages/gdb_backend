@@ -1,12 +1,8 @@
 import datetime
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 
-from src.schemas.nested_models import GameNested
-from src.schemas.genre_schemas import Genre
-from src.schemas.platform_schemas import Platform
-from src.schemas.comment_schemas import Comment
-from src.schemas.grade_schemas import Grade
+from src.schemas.nested_models import GameNested  # noqa: F401
 
 
 class GameBase(BaseModel):

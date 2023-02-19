@@ -4,11 +4,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api_v1.api import api_v1_router
-from src.db.database import Base, SessionLocal, engine
+from src.db.database import SessionLocal
 from src.db.init_db import init_db
 from src.core.config import settings
 from src.api_v1.exceptions import (
-    ObjectDoesNotExistException, 
+    ObjectDoesNotExistException,
     IncorrectImageExtensionException
 )
 
@@ -39,13 +39,13 @@ async def root():
 
 @app.exception_handler(ObjectDoesNotExistException)
 async def object_does_not_exist_exception_handler(
-        request: Request, exc: ObjectDoesNotExistException
-    ):
+    request: Request, exc: ObjectDoesNotExistException
+):
     return JSONResponse(status_code=exc.status_code, content=exc.content)
 
 
 @app.exception_handler(IncorrectImageExtensionException)
 async def incorrect_image_extension_handler(
-        request: Request, exc: IncorrectImageExtensionException
-    ):
+    request: Request, exc: IncorrectImageExtensionException
+):
     return JSONResponse(status_code=exc.status_code, content=exc.content)

@@ -2,9 +2,7 @@ from typing import Tuple
 
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.models import models
 from src.schemas.user_schemas import UserCreate, UserUpdate

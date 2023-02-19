@@ -1,10 +1,6 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.category_schemas import (
     Category,
     CategoryCreate,
@@ -12,13 +8,8 @@ from src.schemas.category_schemas import (
     CategoryUpdateGame
 )
 from src.crud import category_crud
-from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
-from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
-    create_access_token
-)
+from src.api_v1.depends import get_db, Pagination
+
 
 router = APIRouter(prefix='/category', tags=['Categories'])
 
@@ -31,8 +22,8 @@ async def read_category_by_id(category_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[Category])
 async def read_all_categories(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_categories = category_crud.get_all_categories(
         db=db, size=paginator.size, page=paginator.page
     )
@@ -41,8 +32,8 @@ async def read_all_categories(
 
 @router.get('/{user_id}', response_model=list[Category])
 async def read_all_categories_by_user_id(
-        user_id: int, paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    user_id: int, paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_categories = category_crud.get_categories_by_user_id(
         db=db, size=paginator.size, page=paginator.page, user_id=user_id
     )
@@ -57,8 +48,8 @@ async def create_category(category: CategoryCreate, db: Session = Depends(get_db
 
 @router.put('/{category_id}', response_model=Category)
 async def update_category(
-        category_id: int, category: CategoryUpdate, db: Session = Depends(get_db)
-    ):
+    category_id: int, category: CategoryUpdate, db: Session = Depends(get_db)
+):
     db_category = category_crud.update_category(
         db=db, category_id=category_id, category=category
     )
@@ -73,8 +64,8 @@ async def delete_category(category_id: int, db: Session = Depends(get_db)):
 
 @router.post('/{category_id}/games', response_model=Category)
 async def add_games_to_category(
-        category_id: int, games: CategoryUpdateGame, db: Session = Depends(get_db)
-    ):
+    category_id: int, games: CategoryUpdateGame, db: Session = Depends(get_db)
+):
     db_category = category_crud.add_games_to_category(
         db=db, category_id=category_id, games=games
     )
@@ -83,8 +74,8 @@ async def add_games_to_category(
 
 @router.put('/{category_id}/games', response_model=Category)
 async def remove_games_from_category(
-        category_id: int, games: CategoryUpdateGame, db: Session = Depends(get_db)
-    ):
+    category_id: int, games: CategoryUpdateGame, db: Session = Depends(get_db)
+):
     db_category = category_crud.remove_games_from_category(
         db=db, category_id=category_id, games=games
     )
@@ -93,8 +84,8 @@ async def remove_games_from_category(
 
 @router.delete('/{category_id}/games', response_model=Category)
 async def remove_all_games_from_category(
-        category_id: int, db: Session = Depends(get_db)
-    ):
+    category_id: int, db: Session = Depends(get_db)
+):
     db_category = category_crud.remove_all_games_from_category(
         db=db, category_id=category_id
     )

@@ -1,19 +1,10 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.platform_schemas import Platform, PlatformCreate, PlatformUpdate
 from src.crud import platform_crud
-from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
-from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
-    create_access_token
-)
+from src.api_v1.depends import get_db, Pagination
+
 
 router = APIRouter(prefix='/platform', tags=['Platforms'])
 
@@ -26,8 +17,8 @@ async def read_platform_by_id(platform_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[Platform])
 async def read_all_platform(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_platforms = platform_crud.get_all_platforms(
         db=db, size=paginator.size, page=paginator.page
     )
@@ -42,8 +33,8 @@ async def create_platform(platform: PlatformCreate, db: Session = Depends(get_db
 
 @router.put('/{platform_id}', response_model=Platform)
 async def update_platform(
-        platform_id: int, platform: PlatformUpdate, db: Session = Depends(get_db)
-    ):
+    platform_id: int, platform: PlatformUpdate, db: Session = Depends(get_db)
+):
     db_platform = platform_crud.update_platform(
         db=db, platform_id=platform_id, platform=platform
     )

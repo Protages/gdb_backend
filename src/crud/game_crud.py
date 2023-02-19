@@ -5,13 +5,11 @@ from pathlib import Path
 
 from fastapi import Response, status, HTTPException, UploadFile
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.game_schemas import GameCreate, GameUpdate
 from src.api_v1.exceptions import (
-    ObjectDoesNotExistException, 
+    ObjectDoesNotExistException,
     IncorrectImageExtensionException
 )
 from src.api_v1.validators import image_extension_validator
@@ -113,7 +111,7 @@ def get_game_main_image_path(db: Session, game_id: int) -> str:
 def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     if not image_extension_validator(image_name=image.filename):
         raise IncorrectImageExtensionException()
-    
+
     db_game = get_game_by_id(db=db, game_id=game_id)
     image_path = db_game.create_image_path()
     iamge_name = db_game.create_main_image_name(file_name=image.filename)
@@ -124,7 +122,7 @@ def upload_game_main_image(db: Session, game_id: int, image: UploadFile):
     with open(image_url, 'wb') as out_file:
         content = image.file.read()
         out_file.write(content)
-    
+
     db_game.main_image_path = image_url
 
     db.add(db_game)
@@ -150,8 +148,8 @@ def get_game_images_base64(db: Session, game_id: int) -> list[bytes]:
 
 
 def upload_game_images(
-        db: Session, game_id: int, images: list[UploadFile], patch: bool = False
-    ):
+    db: Session, game_id: int, images: list[UploadFile], patch: bool = False
+):
     for image in images:
         if not image_extension_validator(image_name=image.filename):
             raise IncorrectImageExtensionException()
@@ -166,7 +164,7 @@ def upload_game_images(
     for i, image in enumerate(images):
         db_image = models.Image(game_id=db_game.id)
         iamge_name = db_image.create_image_name(
-            indx=i + game_images_len, 
+            indx=i + game_images_len,
             img_name_prefix=db_game.img_name_prefix,
             file_name=image.filename
         )
@@ -175,7 +173,7 @@ def upload_game_images(
         with open(image_url, 'wb') as out_file:
             content = image.file.read()
             out_file.write(content)
-        
+
         db_image.image_path = image_url
         db.add(db_image)
 

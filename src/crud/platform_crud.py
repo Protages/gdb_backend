@@ -1,8 +1,6 @@
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.platform_schemas import PlatformCreate, PlatformUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
@@ -32,8 +30,8 @@ def create_platform(db: Session, platform: PlatformCreate) -> models.Platform:
 
 
 def update_platform(
-        db: Session, platform_id: int, platform: PlatformUpdate
-    ) -> models.Platform:
+    db: Session, platform_id: int, platform: PlatformUpdate
+) -> models.Platform:
     db_platform = get_platform_by_id(db=db, platform_id=platform_id)
     update_data = jsonable_encoder(platform, exclude_unset=True)
 

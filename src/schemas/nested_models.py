@@ -20,7 +20,7 @@ class GameNested(BaseModel):
     def genres_validator(cls, v: list[int]) -> list[int]:
         res = [genre.id for genre in v]
         return res
-    
+
     @validator('platforms')
     def platform_validator(cls, v: list[int]) -> list[int]:
         res = [platform.id for platform in v]

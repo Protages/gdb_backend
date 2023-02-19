@@ -49,8 +49,8 @@ create_platform_invalid_data = {
 create_platform_invalid_data_response = {
     'detail': [
         {
-            'loc': ['body', 'title'], 
-            'msg': 'field required', 
+            'loc': ['body', 'title'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]

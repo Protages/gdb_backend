@@ -14,8 +14,8 @@ def remove_old_game_main_image(db_game: models.Game, image_path: str) -> None:
 
 
 def remove_all_old_game_images(
-        db: Session, db_game: models.Game, image_path: str
-    ) -> None:
+    db: Session, db_game: models.Game, image_path: str
+) -> None:
     '''Delete all old images from database and static'''
     db_images: list[models.Image] = db_game.images
 

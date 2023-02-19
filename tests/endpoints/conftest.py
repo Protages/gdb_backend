@@ -1,9 +1,8 @@
 import os
 import pytest
-import tempfile
 import shutil
 from pathlib import Path
-from typing import Generator, Any
+from typing import Generator
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -12,11 +11,10 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from src.main import app
 from src.db.database import Base
-from src.core import config
 from src.api_v1 import depends
 from tests.utils import (
-    tmp_database, 
-    check_dir_contain_files_with_extensions, 
+    tmp_database,
+    check_dir_contain_files_with_extensions,
     DEFAULT_SQLITE_URL
 )
 
@@ -27,7 +25,7 @@ def sqlite() -> Generator[str, None, None]:
     with tmp_database(DEFAULT_SQLITE_URL, 'endpoints') as tmp_url:
         yield tmp_url
 
-    
+
 @pytest.fixture(scope='session')
 def sqlite_engine(sqlite: Generator[str, None, None]) -> Generator[Engine, None, None]:
     '''Create sqlite engine'''
@@ -45,8 +43,8 @@ def create_all_db_models(engine) -> None:
 
 @pytest.fixture(scope='session')
 def create_sessionmaker(
-        sqlite_engine: Generator[Engine, None, None]
-    ) -> Generator[sessionmaker, None, None]:
+    sqlite_engine: Generator[Engine, None, None]
+) -> Generator[sessionmaker, None, None]:
     create_all_db_models(sqlite_engine)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sqlite_engine)
     yield SessionLocal
@@ -77,7 +75,9 @@ def get_session(create_sessionmaker: Generator[sessionmaker, None, None]):
 
 
 @pytest.fixture(scope='function')
-def test_client(get_session, create_tmp_static_path) -> Generator[TestClient, None, None]:
+def test_client(
+    get_session, create_tmp_static_path
+) -> Generator[TestClient, None, None]:
     '''
     Creates a TestClient and overrides get_in() dependency of temporary database
     '''

@@ -1,7 +1,6 @@
 import pytest
 
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 
 @pytest.mark.order(3)
@@ -19,7 +18,7 @@ def test_login_valid_data(test_client: TestClient):
             'rating': 0,
             'is_active': True,
             'is_superuser': False,
-            'is_email_confirmed': False,    
+            'is_email_confirmed': False,
             'roles': []
         },
         'token': {
@@ -31,6 +30,7 @@ def test_login_valid_data(test_client: TestClient):
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json()['user'] == response_data['user']
-    assert response.json()['token']['token_type'] == response_data['token']['token_type']
+    assert response.json()['token']['token_type'] == \
+           response_data['token']['token_type']
     assert response.json()['token'].get('access_token', False)
     assert len(response.json()['token'].get('access_token')) > 15

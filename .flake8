@@ -1,0 +1,10 @@
+[flake8]
+extend-ignore = E722
+exclude =
+    env/,
+    .git,
+    __pycache__,
+    .vscode,
+    alembic/,
+max-complexity = 10
+max-line-length = 88

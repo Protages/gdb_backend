@@ -1,8 +1,6 @@
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.genre_schemas import GenreCreate, GenreUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException

@@ -1,7 +1,7 @@
 import httpx
 
 from pydantic import EmailStr
-from jinja2 import Environment, select_autoescape, PackageLoader
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 from src.core.config import settings
 from src.core.celery.celery import celery
@@ -27,13 +27,13 @@ def send_email_confirm_notification(to_email: EmailStr, username: str, url: str)
         'api-key': settings.EMAIL_API_KEY,
         'content-type': 'application/json'
     }
-    data = {  
-        "sender": {  
+    data = {
+        "sender": {
             "name": settings.EMAIL_NAME,
             "email": settings.EMAIL_FROM
         },
-        "to": [  
-            {  
+        "to": [
+            {
                 "email": to_email,
                 "name": username
             }

@@ -1,18 +1,10 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.role_schemas import Role, RoleCreate, RoleUpdate
 from src.crud import role_crud
-from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
-from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
-    create_access_token
-)
+from src.api_v1.depends import get_db, Pagination
+
 
 router = APIRouter(prefix='/role', tags=['Roles'])
 
@@ -25,8 +17,8 @@ async def read_role(role_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[Role])
 async def read_all_roles(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_roles = role_crud.get_all_roles(db=db, size=paginator.size, page=paginator.page)
     return db_roles
 

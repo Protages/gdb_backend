@@ -2,13 +2,13 @@ import os
 from pathlib import Path
 
 from sqlalchemy import (
-    Column, 
-    Table, 
-    ForeignKey, 
-    Integer, 
-    String, 
-    Boolean, 
-    Date, 
+    Column,
+    Table,
+    ForeignKey,
+    Integer,
+    String,
+    Boolean,
+    Date,
     # ARRAY, # Dosn't work with SQLite (only Postresql)
     UniqueConstraint
 )
@@ -16,12 +16,6 @@ from sqlalchemy.orm import relationship
 
 from src.db.database import Base
 from src.core.config import settings
-
-
-# class Token(Base):
-#     access_token = Column(String)
-#     username = Column(String, uniqe=True)
-#     expire = Column(String)
 
 
 user_role = Table(
@@ -89,7 +83,9 @@ game_category = Table(
 class Game(Base):
     img_name_prefix = 'img_'
     main_img_name_prefix = 'main_image'
-    default_main_image_url = os.path.join(settings.STATIC_URL, 'img', 'games', 'default.png')
+    default_main_image_url = os.path.join(
+        settings.STATIC_URL, 'img', 'games', 'default.png'
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
@@ -133,8 +129,8 @@ class Image(Base):
     game = relationship('Game', back_populates='images')
 
     def create_image_name(
-            self, img_name_prefix: str, indx: int, file_name: str
-        ) -> str:
+        self, img_name_prefix: str, indx: int, file_name: str
+    ) -> str:
         file_extension = file_name.split('.')[-1]
         return f'{img_name_prefix}{indx + 1}.{file_extension}'
 
@@ -185,7 +181,7 @@ class Comment(Base):
     game = relationship('Game', back_populates='comments')
     review_id = Column(Integer, ForeignKey('review.id'))
     review = relationship('Review', back_populates='comments')
-    
+
     def __str__(self) -> str:
         return self.id
 

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from src.schemas.nested_models import ReviewNested
+from src.schemas.nested_models import ReviewNested  # noqa: F401
 from src.schemas.user_schemas import UserNested
 from src.schemas.game_schemas import GameNested
 

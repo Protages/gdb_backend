@@ -75,7 +75,7 @@ def test_read_review_invalid_id(test_client: TestClient):
 
 def test_read_all_review(test_client: TestClient):
     response_data = reviews_data.review_valid_data_response
-    response = test_client.get(f'/api/v1/review/')
+    response = test_client.get('/api/v1/review/')
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data
@@ -89,8 +89,8 @@ def test_read_all_review(test_client: TestClient):
     ]
 )
 def test_read_all_review_invalid_pagination(
-        test_client: TestClient, size, page, response_data
-    ):
+    test_client: TestClient, size, page, response_data
+):
     response = test_client.get(f'/api/v1/review/?size={size}&page={page}')
     print('-----', response.json())
     assert response.status_code == 400
@@ -128,7 +128,7 @@ def test_delete_review(test_client: TestClient):
     response = test_client.delete(f'/api/v1/review/{5}')
     assert response.status_code == 204
 
-    response = test_client.get(f'/api/v1/review/')
+    response = test_client.get('/api/v1/review/')
     assert response.status_code == 200
     assert len(response.json()) == 4
 

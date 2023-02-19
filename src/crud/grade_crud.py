@@ -1,6 +1,5 @@
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Update
 
@@ -33,13 +32,13 @@ def create_grade(db: Session, grade: GradeCreate) -> models.Grade:
         db=db,
         field_names_with_id=True
     )
-    
+
     user_id = grade.user
     game_id = grade.game
     user = user_crud.get_user_by_id(db=db, user_id=user_id)
     game = game_crud.get_game_by_id(db=db, game_id=game_id)
     create_data = jsonable_encoder(grade, exclude={'user', 'game'})
-    
+
     db_grade = models.Grade(**create_data)
     db_grade.user = user
     db_grade.game = game
@@ -52,7 +51,7 @@ def create_grade(db: Session, grade: GradeCreate) -> models.Grade:
 
 
 def update_grade(db: Session, grade_id: int, grade: GradeUpdate) -> models.Grade:
-    res = db.execute(
+    db.execute(
         Update(models.Grade)
         .where(models.Grade.id == grade_id)
         .values(**grade.dict(exclude_unset=True))

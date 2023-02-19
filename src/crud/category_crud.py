@@ -1,12 +1,10 @@
 from fastapi import Response, status, HTTPException
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.category_schemas import (
-    CategoryCreate, 
-    CategoryUpdate, 
+    CategoryCreate,
+    CategoryUpdate,
     CategoryUpdateGame
 )
 from src.api_v1.exceptions import ObjectDoesNotExistException
@@ -30,9 +28,9 @@ def get_all_categories(db: Session, size: int, page: int) -> list[models.Categor
 
 
 def get_categories_by_user_id(
-        db: Session, size: int, page: int, user_id: int
-    ) -> list[models.Category]:
-    filter = models.Category.user_id == user_id 
+    db: Session, size: int, page: int, user_id: int
+) -> list[models.Category]:
+    filter = models.Category.user_id == user_id
     db_categories = pagination_query(
         model=models.Category, size=size, page=page, filter=filter, db=db
     )
@@ -41,9 +39,9 @@ def get_categories_by_user_id(
 
 def create_category(db: Session, category: CategoryCreate) -> models.Category:
     unique_together_validator(
-        model=models.Category, 
-        obj=category, 
-        first_field_name='title', 
+        model=models.Category,
+        obj=category,
+        first_field_name='title',
         second_field_name='user_id',
         db=db,
         field_names_with_id=True
@@ -68,14 +66,14 @@ def create_category(db: Session, category: CategoryCreate) -> models.Category:
 
 
 def update_category(
-        db: Session, category_id: int, category: CategoryUpdate
-    ) -> models.Category:
+    db: Session, category_id: int, category: CategoryUpdate
+) -> models.Category:
     db_category = get_category_by_id(db=db, category_id=category_id)
 
     unique_together_validator(
-        model=models.Category, 
-        obj=CategoryCreate(title=category.title, user=db_category.user_id), 
-        first_field_name='title', 
+        model=models.Category,
+        obj=CategoryCreate(title=category.title, user=db_category.user_id),
+        first_field_name='title',
         second_field_name='user_id',
         db=db,
         field_names_with_id=True
@@ -101,8 +99,8 @@ def delete_category(db: Session, category_id: int):
 
 
 def add_games_to_category(
-        db: Session, category_id: int, games: CategoryUpdateGame
-    ) -> models.Category:
+    db: Session, category_id: int, games: CategoryUpdateGame
+) -> models.Category:
     db_category = get_category_by_id(db=db, category_id=category_id)
 
     for game_id in games.games:
@@ -117,8 +115,8 @@ def add_games_to_category(
 
 
 def remove_games_from_category(
-        db: Session, category_id: int, games: CategoryUpdateGame
-    ) -> models.Category:
+    db: Session, category_id: int, games: CategoryUpdateGame
+) -> models.Category:
     db_category = get_category_by_id(db=db, category_id=category_id)
 
     for game_id in games.games:
@@ -127,7 +125,7 @@ def remove_games_from_category(
             db_category.games.remove(game)
         except:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, 
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f'Game with id {game_id} are not in category'
             )
 

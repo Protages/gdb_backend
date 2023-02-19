@@ -63,11 +63,11 @@ def test_upload_game_images(test_client: TestClient):
          open(image_2_path, 'rb') as img_2_file:
         request_data = [
             (
-                'images', 
+                'images',
                 ('game_img_1_valid.jpg', img_1_file, 'image/jpeg')
             ),
             (
-                'images', 
+                'images',
                 ('game_img_2_valid.jpg', img_2_file, 'image/jpeg')
             )
         ]
@@ -84,7 +84,7 @@ def test_upload_game_images_invalid_extension(test_client: TestClient):
     with open(image_path, 'rb') as img_file:
         request_data = [
             (
-                'images', 
+                'images',
                 ('game_img_invalid.webp', img_file, 'image/webp')
             )
         ]
@@ -106,12 +106,12 @@ def test_read_game_images(test_client: TestClient):
          open(image_2_path, 'rb') as img_2_file:
         img_1_base64 = base64.b64encode(img_1_file.read())
         img_2_base64 = base64.b64encode(img_2_file.read())
-        
+
         response = test_client.get(f'/api/v1/game/{1}/images')
 
         assert len(response.json()) == 2
-        assert response.json()[0] == img_1_base64.decode("utf-8") 
-        assert response.json()[1] == img_2_base64.decode("utf-8") 
+        assert response.json()[0] == img_1_base64.decode("utf-8")
+        assert response.json()[1] == img_2_base64.decode("utf-8")
     # print('-----', response.json())
     assert response.status_code == 200
     assert response.headers['content-type'] == response_content_type
@@ -124,7 +124,7 @@ def test_upload_game_images_patch(test_client: TestClient):
     with open(image_path, 'rb') as img_file:
         request_data = [
             (
-                'images', 
+                'images',
                 ('game_img_3_valid.jpg', img_file, 'image/jpg')
             )
         ]
@@ -150,13 +150,13 @@ def test_read_game_images_with_patch(test_client: TestClient):
         img_1_base64 = base64.b64encode(img_1_file.read())
         img_2_base64 = base64.b64encode(img_2_file.read())
         img_3_base64 = base64.b64encode(img_3_file.read())
-        
+
         response = test_client.get(f'/api/v1/game/{1}/images')
 
         assert len(response.json()) == 3
-        assert response.json()[0] == img_1_base64.decode("utf-8") 
+        assert response.json()[0] == img_1_base64.decode("utf-8")
         assert response.json()[1] == img_2_base64.decode("utf-8")
-        assert response.json()[2] == img_3_base64.decode("utf-8") 
+        assert response.json()[2] == img_3_base64.decode("utf-8")
     # print('-----', response.json())
     assert response.status_code == 200
     assert response.headers['content-type'] == response_content_type
@@ -169,7 +169,7 @@ def test_upload_game_images_remove_old_images(test_client: TestClient):
     with open(image_path, 'rb') as img_file:
         request_data = [
             (
-                'images', 
+                'images',
                 ('game_img_1_valid.jpg', img_file, 'image/jpeg')
             )
         ]
@@ -185,11 +185,11 @@ def test_read_game_images_after_remove_old_images(test_client: TestClient):
     )
     with open(image_path, 'rb') as img_file:
         img_base64 = base64.b64encode(img_file.read())
-        
+
         response = test_client.get(f'/api/v1/game/{1}/images')
 
         assert len(response.json()) == 1
-        assert response.json()[0] == img_base64.decode("utf-8") 
+        assert response.json()[0] == img_base64.decode("utf-8")
     # print('-----', response.json())
     assert response.status_code == 200
     assert response.headers['content-type'] == response_content_type

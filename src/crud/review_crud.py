@@ -1,8 +1,6 @@
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.review_schemas import ReviewCreate, ReviewUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
@@ -45,7 +43,7 @@ def update_review(db: Session, review_id: int, review: ReviewUpdate) -> models.R
     for field in jsonable_encoder(db_review):
         if field in update_data:
             setattr(db_review, field, update_data[field])
-            
+
     db.add(db_review)
     db.commit()
     db.refresh(db_review)

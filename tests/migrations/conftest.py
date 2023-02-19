@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from sqlalchemy import create_engine
@@ -12,7 +11,7 @@ def pg_url():
     Provides base SQLite URL for creating temporary databases.
     """
     return DEFAULT_SQLITE_URL
-    
+
     # For PostgreSQL
     # return URL(os.getenv('CI_STAFF_PG_URL', DEFAULT_PG_URL))
 

@@ -2,7 +2,7 @@ from pydantic import BaseModel, validator, Field
 
 from src.schemas.role_schemas import Role
 from src.api_v1.validators import (
-    email_validator, 
+    email_validator,
     username_validator,
     password_validator
 )

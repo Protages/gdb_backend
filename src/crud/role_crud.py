@@ -1,13 +1,11 @@
 from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.models import models
 from src.api_v1.exceptions import ObjectDoesNotExistException
 from src.crud.queries import pagination_query
-from src.schemas.role_schemas import RoleCreate, RoleUpdate, Role
+from src.schemas.role_schemas import RoleCreate, RoleUpdate
 
 
 def get_role_by_id(db: Session, role_id: int) -> models.Role:

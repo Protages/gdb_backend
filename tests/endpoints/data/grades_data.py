@@ -1,6 +1,6 @@
 '''Grades data for tests'''
 
-from tests.endpoints.data import user_data, games_data 
+from tests.endpoints.data import user_data, games_data
 
 
 create_grade_valid_data = [
@@ -71,18 +71,18 @@ create_grade_invalid_data = {
 create_grade_invalid_data_response = {
     'detail': [
         {
-            'loc': ['body', 'score'], 
-            'msg': 'field required', 
+            'loc': ['body', 'score'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'user'], 
-            'msg': 'field required', 
+            'loc': ['body', 'user'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'game'], 
-            'msg': 'field required', 
+            'loc': ['body', 'game'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]
@@ -104,8 +104,8 @@ create_grade_invalid_score = [
 create_grade_invalid_score_response = {
     'detail': [
         {
-            'loc': ['body', 'score'], 
-            'msg': 'Score is not valid, must be from 1 to 10', 
+            'loc': ['body', 'score'],
+            'msg': 'Score is not valid, must be from 1 to 10',
             'type': 'value_error'
         }
     ]
@@ -145,8 +145,8 @@ update_grade_invalid_data = {
 update_grade_invalid_data_response = {
     'detail': [
         {
-            'loc': ['body', 'score'], 
-            'msg': 'field required', 
+            'loc': ['body', 'score'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]

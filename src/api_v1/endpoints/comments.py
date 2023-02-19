@@ -1,19 +1,10 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.comment_schemas import Comment, CommentCreate, CommentUpdate
 from src.crud import comment_crud
-from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
-from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
-    create_access_token
-)
+from src.api_v1.depends import get_db, Pagination
+
 
 router = APIRouter(prefix='/comment', tags=['Comments'])
 
@@ -26,8 +17,8 @@ async def read_comment_by_id(comment_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[Comment])
 async def read_all_comments(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_comments = comment_crud.get_all_comments(
         db=db, size=paginator.size, page=paginator.page
     )
@@ -42,8 +33,8 @@ async def create_comment(comment: CommentCreate, db: Session = Depends(get_db)):
 
 @router.put('/{comment_id}', response_model=Comment)
 async def update_comment(
-        comment_id: int, comment: CommentUpdate, db: Session = Depends(get_db)
-    ):
+    comment_id: int, comment: CommentUpdate, db: Session = Depends(get_db)
+):
     comment = comment_crud.update_comment(db=db, comment_id=comment_id, comment=comment)
     return comment
 

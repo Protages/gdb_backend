@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
 from src.api_v1.endpoints import (
-    users, 
-    roles, 
-    login, 
-    genres, 
-    platforms, 
+    users,
+    roles,
+    login,
+    genres,
+    platforms,
     games,
     reviews,
     comments,

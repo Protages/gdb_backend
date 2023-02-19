@@ -1,21 +1,11 @@
-from datetime import datetime, timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, status, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
-from src.models import models
 from src.schemas.game_schemas import Game, GameCreate, GameUpdate
-from src.schemas.image_schemas import Image
 from src.crud import game_crud
-from src.api_v1.depends import get_db, oauth2_scheme, Pagination
-from src.core import config
-from src.core.security import (
-    authenticate_user, 
-    authenticate_user_by_token, 
-    create_access_token
-)
+from src.api_v1.depends import get_db, Pagination
+
 
 router = APIRouter(prefix='/game', tags=['Games'])
 
@@ -28,8 +18,8 @@ async def read_game_by_id(game_id: int, db: Session = Depends(get_db)):
 
 @router.get('/', response_model=list[Game])
 async def read_all_games(
-        paginator: Pagination = Depends(), db: Session = Depends(get_db)
-    ):
+    paginator: Pagination = Depends(), db: Session = Depends(get_db)
+):
     db_games = game_crud.get_all_games(db=db, size=paginator.size, page=paginator.page)
     return db_games
 
@@ -53,8 +43,8 @@ async def delete_game(game_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    '/{game_id}/main_img', 
-    response_class=FileResponse, 
+    '/{game_id}/main_img',
+    response_class=FileResponse,
     responses={
         200: {
             "content": {"image/png": {}},
@@ -68,15 +58,15 @@ async def get_game_main_image(game_id: int, db: Session = Depends(get_db)):
 
 @router.post('/{game_id}/main_img', status_code=status.HTTP_204_NO_CONTENT)
 async def upload_game_main_image(
-        game_id: int, image: UploadFile, db: Session = Depends(get_db)
-    ):
+    game_id: int, image: UploadFile, db: Session = Depends(get_db)
+):
     response = game_crud.upload_game_main_image(db=db, game_id=game_id, image=image)
     return response
 
 
 @router.get(
-    '/{game_id}/images', 
-    response_model=list[bytes], 
+    '/{game_id}/images',
+    response_model=list[bytes],
     response_description="Returns an array of images in base64 format"
 )
 async def get_game_images_in_base64(game_id: int, db: Session = Depends(get_db)):
@@ -85,25 +75,25 @@ async def get_game_images_in_base64(game_id: int, db: Session = Depends(get_db))
 
 
 @router.post(
-    '/{game_id}/images', 
-    status_code=status.HTTP_204_NO_CONTENT, 
+    '/{game_id}/images',
+    status_code=status.HTTP_204_NO_CONTENT,
     description='Remove all old game images(!), and upload new images'
 )
 async def upload_game_images(
-        game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
-    ):
+    game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
+):
     response = game_crud.upload_game_images(db=db, game_id=game_id, images=images)
     return response
 
 
 @router.patch(
-    '/{game_id}/images', 
-    status_code=status.HTTP_204_NO_CONTENT, 
+    '/{game_id}/images',
+    status_code=status.HTTP_204_NO_CONTENT,
     description='Add new images to game, keeps old images'
 )
 async def add_images_to_game(
-        game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
-    ):
+    game_id: int, images: list[UploadFile], db: Session = Depends(get_db)
+):
     response = game_crud.upload_game_images(
         db=db, game_id=game_id, images=images, patch=True
     )

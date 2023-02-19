@@ -93,23 +93,23 @@ create_review_invalid_required_data = {
 create_review_invalid_required_data_response = {
     'detail': [
         {
-            'loc': ['body', 'title'], 
-            'msg': 'field required', 
+            'loc': ['body', 'title'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'body'], 
-            'msg': 'field required', 
+            'loc': ['body', 'body'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'author'], 
-            'msg': 'field required', 
+            'loc': ['body', 'author'],
+            'msg': 'field required',
             'type': 'value_error.missing'
-        }, 
+        },
         {
-            'loc': ['body', 'game'], 
-            'msg': 'field required', 
+            'loc': ['body', 'game'],
+            'msg': 'field required',
             'type': 'value_error.missing'
         }
     ]
@@ -141,15 +141,15 @@ create_review_invalid_data = {
 create_review_invalid_data_response = {
     'detail': [
         {
-            'loc': ['body', 'likes'], 
-            'msg': 'ensure this value is greater than or equal to 0.0', 
-            'type': 'value_error.number.not_ge', 
+            'loc': ['body', 'likes'],
+            'msg': 'ensure this value is greater than or equal to 0.0',
+            'type': 'value_error.number.not_ge',
             'ctx': {'limit_value': 0.0}
         },
         {
-            'loc': ['body', 'rating_minus'], 
-            'msg': 'ensure this value is greater than or equal to 0.0', 
-            'type': 'value_error.number.not_ge', 
+            'loc': ['body', 'rating_minus'],
+            'msg': 'ensure this value is greater than or equal to 0.0',
+            'type': 'value_error.number.not_ge',
             'ctx': {'limit_value': 0.0}
         }
     ]

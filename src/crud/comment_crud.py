@@ -1,8 +1,6 @@
 from fastapi import Response, status, HTTPException
 from fastapi.encoders import jsonable_encoder
-
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import Update
 
 from src.schemas.comment_schemas import CommentCreate, CommentUpdate
 from src.api_v1.exceptions import ObjectDoesNotExistException
@@ -59,8 +57,8 @@ def create_comment(db: Session, comment: CommentCreate) -> models.Comment:
 
 
 def update_comment(
-        db: Session, comment_id: int, comment: CommentUpdate
-    ) -> models.Comment:
+    db: Session, comment_id: int, comment: CommentUpdate
+) -> models.Comment:
     db_comment = get_comment_by_id(db=db, comment_id=comment_id)
     update_data = jsonable_encoder(comment, exclude_unset=True)
 

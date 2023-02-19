@@ -58,7 +58,7 @@ user_valid_data_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
     {
@@ -69,7 +69,7 @@ user_valid_data_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
     {
@@ -80,7 +80,7 @@ user_valid_data_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
     {
@@ -91,7 +91,7 @@ user_valid_data_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
 ]
@@ -116,7 +116,7 @@ user_nested_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
     {
@@ -127,7 +127,7 @@ user_nested_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     },
     {
@@ -138,7 +138,7 @@ user_nested_response = [
         'rating': 0,
         'is_active': True,
         'is_superuser': False,
-        'is_email_confirmed': False,    
+        'is_email_confirmed': False,
         'roles': []
     }
 ]
@@ -174,8 +174,8 @@ create_user_invalid_unique_email_data = {
 user_invalid_email_response = {
     'detail': [
         {
-            'loc': ['body', 'email'], 
-            'msg': 'Email is not valid', 
+            'loc': ['body', 'email'],
+            'msg': 'Email is not valid',
             'type': 'value_error'
         }
     ]
@@ -196,7 +196,7 @@ create_user_invalid_username_data = [
     },
     {
         'email': 'user.3@gmail.com',
-        'username': 'User_3_',  # No _,- or . at the end 
+        'username': 'User_3_',  # No _,- or . at the end
         'password': 'mypass',
         'roles': []
     },
@@ -267,7 +267,7 @@ update_user_valid_data_response = {
     'rating': 11,
     'is_active': False,
     'is_superuser': True,
-    'is_email_confirmed': False,    
+    'is_email_confirmed': False,
     'roles': []
 }
 

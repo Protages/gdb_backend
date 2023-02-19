@@ -4,14 +4,14 @@ from sqlalchemy.orm import Session
 
 from src.db.database import Base, engine
 from src.models.models import (
-    User, 
-    Role, 
-    Genre, 
+    User,
+    Role,
+    Genre,
     Platform,
-    Game, 
-    Review, 
-    Comment, 
-    Grade, 
+    Game,
+    Review,
+    Comment,
+    Grade,
     Category
 )
 from src.core.security import create_hashing_password, create_verification_email_code
@@ -96,9 +96,13 @@ def init_db(db: Session):
     )
 
     comment_1 = Comment(user=user_admin, game_id=1, body='My comment 1 on GTA 5')
-    comment_2 = Comment(user=user_admin, review_id=1, body='My comment 1 on Review on GTA 5')
+    comment_2 = Comment(
+        user=user_admin, review_id=1, body='My comment 1 on Review on GTA 5'
+    )
     comment_3 = Comment(user=user_2, game_id=2, body='My comment 2 on GTA 5')
-    comment_4 = Comment(user=user_2, review_id=2, body='My comment 2 on Review on GTA 5')
+    comment_4 = Comment(
+        user=user_2, review_id=2, body='My comment 2 on Review on GTA 5'
+    )
 
     category_1 = Category(title='My category 1', user=user_admin)
     category_2 = Category(title='My category 2', user=user_admin)
@@ -118,7 +122,7 @@ def init_db(db: Session):
     user_admin.roles.append(role_2)
 
     db.add_all([
-        user_admin, user_2, user_3, 
+        user_admin, user_2, user_3,
         role_1, role_2,
         genre_1, genre_2,
         platform_1, platform_2,

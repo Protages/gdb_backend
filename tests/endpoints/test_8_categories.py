@@ -76,7 +76,7 @@ def test_read_category_invalid_id(test_client: TestClient):
 
 def test_read_all_category(test_client: TestClient):
     response_data = categories_data.category_valid_data_response
-    response = test_client.get(f'/api/v1/category/')
+    response = test_client.get('/api/v1/category/')
     print('-----', response.json())
     assert response.status_code == 200
     assert response.json() == response_data
@@ -90,8 +90,8 @@ def test_read_all_category(test_client: TestClient):
     ]
 )
 def test_read_all_category_invalid_pagination(
-        test_client: TestClient, size, page, response_data
-    ):
+    test_client: TestClient, size, page, response_data
+):
     response = test_client.get(f'/api/v1/category/?size={size}&page={page}')
     print('-----', response.json())
     assert response.status_code == 400
@@ -191,7 +191,7 @@ def test_delete_category(test_client: TestClient):
     response = test_client.delete(f'/api/v1/category/{5}')
     assert response.status_code == 204
 
-    response = test_client.get(f'/api/v1/category/')
+    response = test_client.get('/api/v1/category/')
     assert response.status_code == 200
     assert len(response.json()) == 4
 
