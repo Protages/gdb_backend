@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    command: uvicorn src.main:app --host=0.0.0.0 --reload
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - 8000:8000
+    environment:
+      - ENV_FILE=.env.dev
+    depends_on:
+      - redis
+
+  celery:
+    build: ./
+    command: celery -A src.core.celery.celery worker --loglevel=INFO
+    volumes:
+      - ./:/usr/src/app/
+    depends_on:
+      - app
+      - redis
+
+  redis:
+    image: redis:7.0-alpine
+    restart: always
