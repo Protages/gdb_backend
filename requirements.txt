@@ -18,6 +18,7 @@ sqlalchemy_utils==0.39.0
 pytest==7.2.1
 pytest-env==0.8.1
 pytest-order==1.0.1
+pytest-cov==4.0.0
 
 celery==5.2.7
 Redis==4.4.2
