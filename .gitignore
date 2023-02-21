@@ -12,5 +12,6 @@ alembic/versions/*
 !alembic/versions/.gitkeep
 .env.dev
 .env.prod
+.coverage
 # static/
 # .env.prod.db
