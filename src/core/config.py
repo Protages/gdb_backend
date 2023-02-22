@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     # Tests
     TEST_RUNNING: bool = False
 
+    # Logger
+    QUERY_LOGGER: bool = False
+
     class Config:
         env_file = os.environ.get('ENV_FILE', '.env.dev')
 

@@ -32,6 +32,10 @@ app.add_middleware(
 app.include_router(api_v1_router)
 
 
+if settings.QUERY_LOGGER:
+    from src.db.logger import logger  # noqa: F401
+
+
 @app.get('/')
 async def root():
     return {'msg': 'This is root path! To view docs go to http://127.0.0.1:8000/docs/'}

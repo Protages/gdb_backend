@@ -39,12 +39,23 @@ def image_extension_validator(image_name: str) -> bool:
 
 
 def unique_validator(
-    model: Any, obj: Any, field_name: str, db: Session
+    *, model: Any | None = None,
+    queryset: Any | None = None,
+    obj: Any,
+    field_name: str,
+    db: Session
 ) -> HTTPException | None:
+    '''
+    Checks if there are records with the same field value as obj.
+    Need to pass a model or queryset, if will model then be query(model).all()
+    '''
+    if (model is None and queryset is None) or \
+            (model is not None and queryset is not None):
+        raise Exception('Need pass model or queryset')
     if not hasattr(obj, field_name):
         raise Exception(f'Sent obj does not have {field_name} field')
 
-    objects = db.query(model).all()
+    objects = db.query(model).all() if queryset is None else queryset
     for o in objects:
         value = getattr(o, field_name, False)
         if not value:
