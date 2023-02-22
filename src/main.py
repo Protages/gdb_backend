@@ -4,7 +4,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api_v1.api import api_v1_router
-from src.db.logger import logger  # noqa: F401
 from src.db.database import SessionLocal
 from src.db.init_db import init_db
 from src.core.config import settings
@@ -31,6 +30,10 @@ app.add_middleware(
     allow_headers=settings.ALLOW_HEADERS
 )
 app.include_router(api_v1_router)
+
+
+if settings.QUERY_LOGGER:
+    from src.db.logger import logger  # noqa: F401
 
 
 @app.get('/')
