@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api_v1.api import api_v1_router
+from src.db.logger import logger  # noqa: F401
 from src.db.database import SessionLocal
 from src.db.init_db import init_db
 from src.core.config import settings
